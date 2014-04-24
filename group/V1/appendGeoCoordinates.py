@@ -36,7 +36,8 @@ def plotCharts(energyData):
             rowData = pd.concat([energyData['Country'], energyData[row]], axis=1)
             rowData = rowData.set_index('Country')
             rowData = rowData.sort_index(axis=0, ascending=True)
-            plt.subplot(2,4,i)
+            plt.subplot(7,1,i)
+            #rowData[row].plot(kind='bar',stacked=True)
             rowData[row].plot()
             plt.title(row)
 
@@ -60,13 +61,13 @@ def appendGeoToCountries(energyData):
 energyData = pd.read_csv("data/EnergyMix.csv")
 
 # show charts of coutry statistics
-#plotCharts(energyData)
+plotCharts(energyData)
 
 #show geo-coordinates of contries
 #getCountryCoordinates(energyData['Country'])
 
 #append geo coordinates to new file
-appendGeoToCountries(energyData)
+#appendGeoToCountries(energyData)
 
 
 

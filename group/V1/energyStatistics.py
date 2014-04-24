@@ -12,7 +12,7 @@ def summaryChart(energyData):
     #plt.show()
 
     for (i, item) in enumerate(describe):
-        plt.subplot(2,3,i)
+        plt.subplot(5,1,i)
         describe.boxplot(column=[item],vert=False)
     plt.show()
 
