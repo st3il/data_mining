@@ -5,6 +5,8 @@ import pandas as pd;
 import numpy as np;
 
 import matplotlib.pyplot as plt;
+import time
+
 
 import urllib, json, csv
 
@@ -47,11 +49,33 @@ print((dateiinhalt) );
 
 addresses = dateiinhalt["Country"]
 
-#Loop to feed the func with adresses and output the lat & lng.
-i=0
-for a in addresses:
-    i = i+1
-    print(str(i) + ": " + str(a))
 
-    r = geocode(a)
-    print "%s %s" % (r['lat'], r['lng'])
+
+print(addresses.size)
+latlng = np.arange(addresses.size * 2).reshape(addresses.size, 2)
+print(latlng)
+
+
+latlngDataFrame = pd.DataFrame(columns=["Country", "lat", "lng"])
+
+latlngDataFrame.loc[0] = ["deutschlan",1,1]
+
+
+
+print(latlngDataFrame)
+
+
+
+#Loop to feed the func with adresses and output the lat & lng.
+
+for (i,a) in enumerate(addresses):
+     i = i+1
+     print(str(i) + ": " + str(a))
+
+     r = geocode(a)
+     print "%s %s" % (r['lat'], r['lng'])
+     if i%10==0:
+         print("wait")
+         time.sleep(3)
+
+
