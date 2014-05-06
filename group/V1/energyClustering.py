@@ -21,7 +21,7 @@ def dendrogramClustering(energyDataFrame):
     distanceMatrix = pdist(scaledEnergyData,'correlation')
 
     #get relative engerie usage
-    relEnergieUse = linkage(distanceMatrix, method='average')
+    relEnergieUse = linkage(distanceMatrix, method='average', metric='correlation')
 
     #create dendrogram
     dendrogram(relEnergieUse, orientation='left',labels=countrynames)
@@ -81,8 +81,8 @@ def singleClustering(energyDataFrame):
 energyDataFrame = pd.read_csv("data/EnergyMix.csv")
 
 #create dendromgram
-#dendrogramClustering(energyDataFrame)
+dendrogramClustering(energyDataFrame)
 
 #create single cluster
-singleClustering(energyDataFrame)
+#singleClustering(energyDataFrame)
 
