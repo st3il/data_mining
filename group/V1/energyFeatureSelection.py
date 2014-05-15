@@ -19,10 +19,6 @@ regressor.fit(featuredEnergyDataFrame,targetEnergyDataFrame)
 
 ch2 = SelectKBest(chi2, k=1)
 
-
-
-
-
 ch2.fit(featuredEnergyDataFrame, targetEnergyDataFrame)
 
 print ch2.scores_
