@@ -1,25 +1,26 @@
-import numpy as np
 import pandas as pd
-from sklearn import preprocessing
-from sklearn.feature_selection import SelectKBest, chi2
-from scipy.cluster.hierarchy import *
-from scipy.spatial.distance import *
-import matplotlib.pyplot as plt
-from sklearn import linear_model
+from sklearn.feature_selection import SelectKBest, f_regression
 
-#read energy csv
+### FUNCTIONS START ###
+
+def featureSelection(energyDataFrame):
+    #get oil coal gas nuclear and hydro column
+    featuredEnergyDataFrame = energyDataFrame[['Oil', 'Coal', 'Gas', 'Nuclear', 'Hydro']]
+    #get CO2Emm out of array
+    targetEnergyDataFrame = energyDataFrame['CO2Emm']
+    #feature selection with selectkbest function with scoring-function f_regression
+    featureSelectin = SelectKBest(f_regression, 3)
+    featureSelectin.fit(featuredEnergyDataFrame, targetEnergyDataFrame)
+    #print results
+    print featureSelectin.scores_
+
+### FUNCTIONS END ###
+
+#read file
 energyDataFrame = pd.read_csv("data/EnergyMix.csv")
 
-#get oil coal gas nuclear and hydro column
-featuredEnergyDataFrame = energyDataFrame[['Oil', 'Coal', 'Gas', 'Nuclear', 'Hydro']]
-targetEnergyDataFrame = energyDataFrame['CO2Emm']
+#call featureSelection function
+featureSelection(energyDataFrame)
 
-regressor = linear_model.LinearRegression()
-regressor.fit(featuredEnergyDataFrame,targetEnergyDataFrame)
 
-ch2 = SelectKBest(chi2, k=1)
-
-ch2.fit(featuredEnergyDataFrame, targetEnergyDataFrame)
-
-print ch2.scores_
 
