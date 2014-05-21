@@ -15,6 +15,15 @@ dateiinhalt = pd.read_csv("data/effectiveRates.csv")
 
 cop = dateiinhalt[['COP', 'AXP', 'RTN', 'BA', 'AAPL']]
 
+
+
+
+plt.plot(cop)
+plt.title("Aktienkurse")
+plt.show()
+
+
+
 yahoo = dateiinhalt['YHOO']
 
 print("Yahoo")
@@ -75,9 +84,9 @@ print( len(features))
 
 
 #plt.xticks(len(a), list(a))
-#plt.plot(yahoo)
-#plt.title("Yahoo Kurs")
-#plt.show()
+plt.plot(yahoo)
+plt.title("Yahoo Kurs")
+plt.show()
 
 
 
@@ -113,7 +122,7 @@ for i in range(predictDuration):
             predictVector[j] = predictedData[idxPredict]
             continue # could get value from predicted data -> use it!
 
-        # hole bekannte Werte, wenn wir den Datenbvektro mit verhergesagten werten füllen können
+        # hole bekannte Werte, wenn wir den Datenbvektro mit verhergesagten werten fuellen koennen
         idxTarget = 650 - j + len(predictedData)
         predictVector[j] = cycleTableYahoo[idxTarget, -1]
 

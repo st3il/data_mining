@@ -108,29 +108,31 @@ differenz = np.diff(open - close)
 print(differenz)
 
 
-print "--------------------------similiarity matrix-----------------------------------"
+#Berechne Aehnlichkeitsmatrix
+
+#Pearson Korrelation
 similiarityMatrix = np.corrcoef(differenz)
 
-# create an AffinityPropagation-Object
+
+# AffinityPropagation-Object
 ap = cl.AffinityPropagation(affinity='precomputed')
 
-# fit to data
+# uebergebe AffinityPropagation-Object an die fit Methode
 ap.fit(similiarityMatrix)
 
-print "--------------------------plot-----------------------------------"
-# create a list of dictionaries. one dictionary per cluster
+
+# erzeuge Dict fuer Plots
 plotData = [dict() for i in range(max(ap.labels_)+1)]
 print plotData
 for i in range(len(ap.labels_)):
-    # ap.labels_[i] is the Cluster of that symbol
-    # plotData[ap.labels_[i]] is a dictionary containing all symbols of that cluster
+
     if symbols[i] not in plotData[ap.labels_[i]]:
         plotData[ap.labels_[i]][names[i]] = pd.DataFrame(quotes[i])
 
 # plot
 for idx, cluster in enumerate(plotData):
     print "\nCluster %d:" %idx
-    plt.close('all') # because MAC
+    plt.close('all')
     plt.figure(idx)
     for key in cluster.keys():
         print "\t%s" % key

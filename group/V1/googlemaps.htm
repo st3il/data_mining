@@ -1,0 +1,119 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title></title>
+    
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAQQRAsOk3uqvy3Hwwo4CclBTrVPfEE8Ms0qPwyRfPn-DOTlpaLBTvTHRCdf2V6KbzW7PZFYLT8wFD0A" type="text/javascript"></script>
+        <script type="text/javascript">
+        //<![CDATA[
+        function load() {
+            if (GBrowserIsCompatible()) {
+
+
+            function Point(lat,long,html,icon) {
+                  this.gpoint = new GMarker(new GLatLng(lat,long),icon);
+                  this.html = html;
+
+               }
+
+
+               function Map(id,points,lat,long,zoom) {
+                  this.id = id;
+                  this.points = points;
+                  this.gmap = new GMap2(document.getElementById(this.id));
+                  this.gmap.setCenter(new GLatLng(lat, long), zoom);
+                  this.markerlist = markerlist;
+                  this.addmarker = addmarker;
+                  this.array2points = array2points;
+
+                  function markerlist(array) {
+                     for (var i in array) {
+                        this.addmarker(array[i]);
+                     }
+                  }
+
+                  function array2points(map_points) {
+                      for (var i in map_points) {
+                        points[i] = new Point(map_points[i][0],map_points[i][1],map_points[i][2],map_points[i][3]);         }
+                      return points;
+                    }
+
+                  function addmarker(point) {
+                     if (point.html) {
+                       GEvent.addListener(point.gpoint, "click", function() { // change click to mouseover or other mouse action
+                           point.gpoint.openInfoWindowHtml(point.html);
+
+                       });
+
+                     }
+                     this.gmap.addOverlay(point.gpoint);
+                  }
+                  this.points = array2points(this.points);
+                  this.markerlist(this.points);
+            }
+                    
+                var icon = new GIcon();
+                icon.image = "";
+                icon.shadow = "";
+                icon.iconSize = new GSize(12, 20);
+                icon.shadowSize = new GSize(22, 20);
+                icon.iconAnchor = new GPoint(6, 20);
+                icon.infoWindowAnchor = new GPoint(5, 1);
+        
+                var icon1 = new GIcon();
+                icon1.image = "http://labs.google.com/ridefinder/images/mm_20_blue.png";
+                icon1.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+                icon1.iconSize = new GSize(12, 20);
+                icon1.shadowSize = new GSize(22, 20);
+                icon1.iconAnchor = new GPoint(6, 20);
+                icon1.infoWindowAnchor = new GPoint(5, 1);
+        
+                var icon2 = new GIcon();
+                icon2.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
+                icon2.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+                icon2.iconSize = new GSize(12, 20);
+                icon2.shadowSize = new GSize(22, 20);
+                icon2.iconAnchor = new GPoint(6, 20);
+                icon2.infoWindowAnchor = new GPoint(5, 1);
+        
+                var icon3 = new GIcon();
+                icon3.image = "http://labs.google.com/ridefinder/images/mm_20_green.png";
+                icon3.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+                icon3.iconSize = new GSize(12, 20);
+                icon3.shadowSize = new GSize(22, 20);
+                icon3.iconAnchor = new GPoint(6, 20);
+                icon3.infoWindowAnchor = new GPoint(5, 1);
+        
+                var icon4 = new GIcon();
+                icon4.image = "http://labs.google.com/ridefinder/images/mm_20_yellow.png";
+                icon4.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+                icon4.iconSize = new GSize(12, 20);
+                icon4.shadowSize = new GSize(22, 20);
+                icon4.iconAnchor = new GPoint(6, 20);
+                icon4.infoWindowAnchor = new GPoint(5, 1);
+        
+                    map_points = [[37.09024, -95.712891, 'US: Oil: 842.9: Coal: 588.7: Gas: 498.0: Nuclear: 190.2: Hydro: 62.2: Total2009: 2182.0', icon1], [56.130366, -106.34677099999999, 'Canada: Oil: 97.0: Coal: 85.2: Gas: 26.5: Nuclear: 20.3: Hydro: 90.2: Total2009: 319.2', icon3], [23.634501, -102.552784, 'Mexico: Oil: 85.6: Coal: 62.7: Gas: 6.8: Nuclear: 2.2: Hydro: 6.0: Total2009: 163.2', icon4], [-38.416097, -63.61667199999999, 'Argentina: Oil: 22.3: Coal: 38.8: Gas: 1.1: Nuclear: 1.8: Hydro: 9.2: Total2009: 73.3', icon4], [-14.235004, -51.92528, 'Brazil: Oil: 104.3: Coal: 18.3: Gas: 11.7: Nuclear: 2.9: Hydro: 88.5: Total2009: 225.7', icon3], [-35.675146999999996, -71.542969, 'Chile: Oil: 15.4: Coal: 3.0: Gas: 4.1: Nuclear: 0.0: Hydro: 5.6: Total2009: 28.1', icon3], [4.570868, -74.297333, 'Colombia: Oil: 8.8: Coal: 7.8: Gas: 3.1: Nuclear: 0.0: Hydro: 9.3: Total2009: 29.0', icon3], [-1.8312389999999998, -78.18340599999998, 'Ecuador: Oil: 9.9: Coal: 0.4: Gas: 0.0: Nuclear: 0.0: Hydro: 2.1: Total2009: 12.4', icon3], [-9.189967, -75.015152, 'Peru: Oil: 8.5: Coal: 3.1: Gas: 0.5: Nuclear: 0.0: Hydro: 4.5: Total2009: 16.6', icon3], [6.42375, -66.58973, 'Venezuela: Oil: 27.4: Coal: 26.8: Gas: 0.0: Nuclear: 0.0: Hydro: 19.5: Total2009: 73.6', icon3], [47.516231, 14.550072, 'Austria: Oil: 13.0: Coal: 8.4: Gas: 2.3: Nuclear: 0.0: Hydro: 8.3: Total2009: 32.0', icon3], [40.143105, 47.576927000000005, 'Azerbaijan: Oil: 2.8: Coal: 6.9: Gas: 0.0: Nuclear: 0.0: Hydro: 0.5: Total2009: 10.2', icon4], [53.709807, 27.953389, 'Belarus: Oil: 9.3: Coal: 14.5: Gas: 0.0: Nuclear: 0.0: Hydro: 0.0: Total2009: 23.9', icon4], [50.503887, 4.469936, 'Belgium: Oil: 38.5: Coal: 15.6: Gas: 4.6: Nuclear: 10.7: Hydro: 0.1: Total2009: 69.4', icon1], [42.733883, 25.48583, 'Bulgaria: Oil: 4.4: Coal: 2.2: Gas: 6.3: Nuclear: 3.5: Hydro: 0.9: Total2009: 17.4', icon1], [49.81749199999999, 15.472961999999999, 'Czech_Republic: Oil: 9.7: Coal: 7.4: Gas: 15.8: Nuclear: 6.1: Hydro: 0.7: Total2009: 39.6', icon1], [56.26392, 9.501785, 'Denmark: Oil: 8.2: Coal: 4.0: Gas: 4.0: Nuclear: 0.0: Hydro: 0.0: Total2009: 16.1', icon4], [61.92410999999999, 25.748151, 'Finland: Oil: 9.9: Coal: 3.2: Gas: 3.7: Nuclear: 5.4: Hydro: 2.9: Total2009: 25.0', icon1], [46.227638, 2.213749, 'France: Oil: 87.5: Coal: 38.4: Gas: 10.1: Nuclear: 92.9: Hydro: 13.1: Total2009: 241.9', icon1], [51.165690999999995, 10.451526, 'Germany: Oil: 113.9: Coal: 70.2: Gas: 71.0: Nuclear: 30.5: Hydro: 4.2: Total2009: 289.8', icon1], [39.074208, 21.824312, 'Greece: Oil: 20.2: Coal: 3.0: Gas: 7.9: Nuclear: 0.0: Hydro: 1.6: Total2009: 32.7', icon4], [47.162494, 19.503304, 'Hungary: Oil: 7.3: Coal: 9.1: Gas: 2.5: Nuclear: 3.5: Hydro: 0.1: Total2009: 22.4', icon1], [64.96305100000001, -19.020835, 'Iceland: Oil: 1.0: Coal: 0.0: Gas: 0.1: Nuclear: 0.0: Hydro: 2.8: Total2009: 3.9', icon3], [53.41291, -8.243889999999999, 'Republic_of_Ireland: Oil: 8.0: Coal: 4.3: Gas: 1.3: Nuclear: 0.0: Hydro: 0.2: Total2009: 13.9', icon4], [41.87194, 12.56738, 'Italy: Oil: 75.1: Coal: 64.5: Gas: 13.4: Nuclear: 0.0: Hydro: 10.5: Total2009: 163.4', icon4], [48.019573, 66.923684, 'Kazakhstan: Oil: 12.0: Coal: 17.7: Gas: 33.0: Nuclear: 0.0: Hydro: 1.7: Total2009: 64.4', icon4], [55.169438, 23.881275, 'Lithuania: Oil: 2.9: Coal: 2.5: Gas: 0.2: Nuclear: 2.5: Hydro: 0.3: Total2009: 8.2', icon1], [52.132633, 5.2912659999999985, 'Netherlands: Oil: 49.4: Coal: 35.0: Gas: 7.9: Nuclear: 1.0: Hydro: 0.0: Total2009: 93.3', icon4], [60.47202399999999, 8.468945999999999, 'Norway: Oil: 9.7: Coal: 3.7: Gas: 0.3: Nuclear: 0.0: Hydro: 28.8: Total2009: 42.5', icon3], [51.919438, 19.145135999999997, 'Poland: Oil: 25.5: Coal: 12.3: Gas: 53.9: Nuclear: 0.0: Hydro: 0.7: Total2009: 92.3', icon4], [39.39987199999999, -8.224454, 'Portugal: Oil: 12.9: Coal: 3.9: Gas: 3.6: Nuclear: 0.0: Hydro: 2.0: Total2009: 22.3', icon3], [45.943160999999996, 24.96676, 'Romania: Oil: 9.9: Coal: 12.2: Gas: 6.2: Nuclear: 2.7: Hydro: 3.6: Total2009: 34.6', icon3], [61.52401, 105.31875600000001, 'Russian_Federation: Oil: 124.9: Coal: 350.7: Gas: 82.9: Nuclear: 37.0: Hydro: 39.8: Total2009: 635.3', icon4], [48.669026, 19.699023999999998, 'Slovakia: Oil: 3.9: Coal: 5.1: Gas: 3.6: Nuclear: 3.2: Hydro: 1.1: Total2009: 16.8', icon1], [40.46366700000001, -3.7492199999999998, 'Spain: Oil: 72.9: Coal: 31.1: Gas: 10.6: Nuclear: 12.0: Hydro: 6.1: Total2009: 132.6', icon1], [60.12816100000001, 18.643501, 'Sweden: Oil: 13.7: Coal: 1.0: Gas: 1.6: Nuclear: 11.9: Hydro: 14.9: Total2009: 43.2', icon3], [46.818188, 8.227511999999999, 'Switzerland: Oil: 12.3: Coal: 2.7: Gas: 0.1: Nuclear: 6.2: Hydro: 8.1: Total2009: 29.4', icon3], [38.963745, 35.243322, 'Turkey: Oil: 28.8: Coal: 28.9: Gas: 27.2: Nuclear: 0.0: Hydro: 8.1: Total2009: 93.0', icon4], [38.969719, 59.556278000000006, 'Turkmenistan: Oil: 5.2: Coal: 17.8: Gas: 0.0: Nuclear: 0.0: Hydro: 0.0: Total2009: 23.0', icon4], [48.379433, 31.16558, 'Ukraine: Oil: 14.1: Coal: 42.3: Gas: 35.0: Nuclear: 18.6: Hydro: 2.7: Total2009: 112.5', icon1], [55.378051, -3.435973, 'United_Kingdom: Oil: 74.4: Coal: 77.9: Gas: 29.7: Nuclear: 15.7: Hydro: 1.2: Total2009: 198.9', icon4], [41.377491, 64.585262, 'Uzbekistan: Oil: 4.9: Coal: 43.9: Gas: 1.4: Nuclear: 0.0: Hydro: 1.4: Total2009: 51.5', icon4], [32.427908, 53.68804599999999, 'Iran: Oil: 83.6: Coal: 118.5: Gas: 1.4: Nuclear: 0.0: Hydro: 1.3: Total2009: 204.8', icon4], [29.311659999999996, 47.481766, 'Kuwait: Oil: 19.2: Coal: 12.1: Gas: 0.0: Nuclear: 0.0: Hydro: 0.0: Total2009: 31.3', icon4], [25.354826, 51.183884, 'Qatar: Oil: 8.2: Coal: 19.0: Gas: 0.0: Nuclear: 0.0: Hydro: 0.0: Total2009: 27.2', icon4], [23.885942, 45.079162, 'Saudi_Arabia: Oil: 121.8: Coal: 69.7: Gas: 0.0: Nuclear: 0.0: Hydro: 0.0: Total2009: 191.5', icon4], [23.424076, 53.847818000000004, 'United_Arab_Emirates: Oil: 21.8: Coal: 53.2: Gas: 0.0: Nuclear: 0.0: Hydro: 0.0: Total2009: 75.0', icon4], [28.033886, 1.6596259999999998, 'Algeria: Oil: 14.9: Coal: 24.0: Gas: 0.7: Nuclear: 0.0: Hydro: 0.1: Total2009: 39.7', icon4], [26.820553000000004, 30.802497999999996, 'Egypt: Oil: 33.7: Coal: 38.3: Gas: 1.1: Nuclear: 0.0: Hydro: 3.1: Total2009: 76.3', icon4], [-30.559482, 22.937506, 'South_Africa: Oil: 24.3: Coal: 0.0: Gas: 99.4: Nuclear: 2.7: Hydro: 0.2: Total2009: 126.8', icon2], [-25.274398, 133.775136, 'Australia: Oil: 42.7: Coal: 23.1: Gas: 50.8: Nuclear: 0.0: Hydro: 2.6: Total2009: 119.2', icon4], [23.684994, 90.35633100000001, 'Bangladesh: Oil: 4.5: Coal: 17.8: Gas: 0.4: Nuclear: 0.0: Hydro: 0.3: Total2009: 22.9', icon4], [35.86166, 104.195397, 'China: Oil: 404.6: Coal: 79.8: Gas: 1537.4: Nuclear: 15.9: Hydro: 139.3: Total2009: 2177.0', icon2], [22.304971600000002, 114.1613064, 'China_Hong_Kong_SAR: Oil: 14.0: Coal: 2.3: Gas: 7.6: Nuclear: 0.0: Hydro: 0.0: Total2009: 23.9', icon4], [20.593684, 78.96288, 'India: Oil: 148.5: Coal: 46.7: Gas: 245.8: Nuclear: 3.8: Hydro: 24.0: Total2009: 468.9', icon2], [-0.789275, 113.921327, 'Indonesia: Oil: 62.0: Coal: 33.0: Gas: 30.5: Nuclear: 0.0: Hydro: 2.7: Total2009: 128.2', icon4], [36.204824, 138.252924, 'Japan: Oil: 197.6: Coal: 78.7: Gas: 108.8: Nuclear: 62.1: Hydro: 16.7: Total2009: 463.9', icon1], [4.210483999999999, 101.97576600000001, 'Malaysia: Oil: 21.4: Coal: 28.3: Gas: 4.0: Nuclear: 0.0: Hydro: 2.0: Total2009: 55.7', icon4], [-40.900557, 174.88597099999998, 'New_Zealand: Oil: 6.8: Coal: 3.6: Gas: 1.7: Nuclear: 0.0: Hydro: 5.5: Total2009: 17.6', icon3], [30.375321000000003, 69.34511599999999, 'Pakistan: Oil: 20.6: Coal: 34.1: Gas: 4.3: Nuclear: 0.6: Hydro: 6.2: Total2009: 65.8', icon4], [12.879721, 121.77401699999999, 'Philippines: Oil: 12.1: Coal: 3.0: Gas: 6.8: Nuclear: 0.0: Hydro: 2.2: Total2009: 24.2', icon3], [1.352083, 103.819836, 'Singapore: Oil: 52.1: Coal: 8.7: Gas: 0.0: Nuclear: 0.0: Hydro: 0.0: Total2009: 60.8', icon4], [35.907757000000004, 127.766922, 'South_Korea: Oil: 104.3: Coal: 30.4: Gas: 68.6: Nuclear: 33.4: Hydro: 0.7: Total2009: 237.5', icon1], [23.69781, 120.96051499999999, 'Taiwan: Oil: 46.6: Coal: 10.2: Gas: 38.7: Nuclear: 9.4: Hydro: 0.8: Total2009: 105.7', icon1], [15.870032, 100.992541, 'Thailand: Oil: 44.2: Coal: 35.3: Gas: 14.1: Nuclear: 0.0: Hydro: 1.5: Total2009: 95.1', icon4]];
+             var map = new Map('map',map_points,48.7,9.1,3);
+        
+
+           map.gmap.addControl(new GMapTypeControl());
+
+           map.gmap.addControl(new GSmallMapControl());
+
+
+            }
+        }
+        //]]>
+        </script>
+
+
+        
+  </head>
+
+  <body onload="load()" onunload="GUnload()">
+    <div id="map" style="width: 1000px; height: 600px"></div>
+  </body>
+</html>
