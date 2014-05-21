@@ -1,14 +1,3 @@
-"""
-Created on 26.02.2012
-
-@author: maucher
-
-This version applies cleaned data provided by matplotlib.finance
-
-In the cleaned data also the "open" value is adjusted w.r.t. splits and dividends
-
-"""
-
 print __doc__
 
 
@@ -20,7 +9,6 @@ import sklearn.cluster as cl
 from matplotlib import pyplot as plt
 
 from sklearn import cluster
-from sklearn import metrics
 
 # Choose a time period reasonnably calm (not too long ago so that we get
 # high-tech firms, and before the 2008 crash)

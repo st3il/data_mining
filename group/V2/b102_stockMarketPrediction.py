@@ -5,13 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.svm import SVR
 from sklearn.metrics import mean_absolute_error
-from sklearn import cross_validation
 
 
 dateiinhalt = pd.read_csv("data/effectiveRates.csv")
-
-#print("effectiveRates");
-#print(dateiinhalt);
 
 cop = dateiinhalt[['COP', 'AXP', 'RTN', 'BA', 'AAPL']]
 
@@ -19,11 +15,6 @@ yahoo = dateiinhalt['YHOO']
 
 print("Yahoo")
 print(yahoo)
-#print(len(cop))
-#a = pd.np.array(dateiinhalt[[0]])
-#a = a.flatten()
-#print(list(a))
-#print(len(a))
 
 
 #time delay: 24  Anzahl der zu berucksichtigten vorhergehenden Kurswerte

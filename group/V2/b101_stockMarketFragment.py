@@ -1,10 +1,4 @@
-# -*- coding:utf8 -*-
 import urllib2
-#from numpy import *
-#import h5py
-import numpy as np
-import pandas as pd
-from matplotlib import pyplot as plt
 
 symbol_dict = {
         'TOT'  : 'Total',
@@ -18,7 +12,7 @@ symbol_dict = {
         'CMCSA': 'Comcast',
         'CVC'  : 'Cablevision',
         'YHOO' : 'Yahoo',
-        #'DELL' : 'Dell', # rausgenommen weil mehr Datensätze drin
+        'DELL' : 'Dell',
         'HPQ'  : 'Hewlett-Packard',
         'AMZN' : 'Amazon',
         'TM'   : 'Toyota',
@@ -34,7 +28,7 @@ symbol_dict = {
         'MMM'  : '3M',
         'MCD'  : 'Mc-Donalds',
         'PEP'  : 'Pepsi',
-        #'KFT'  : 'Kraft-Foods',
+        'KFT'  : 'Kraft-Foods',
         'K'    : 'Kellogg',
         'UN'   : 'Unilever',
         'MAR'  : 'Marriott',
@@ -46,7 +40,7 @@ symbol_dict = {
         'AIG'  : 'AIG',
         'AXP'  : 'American-express',
         'BAC'  : 'Bank-of-America',
-        #'GS'   : 'Goldman-Sachs',
+        'GS'   : 'Goldman-Sachs',
         'AAPL' : 'Apple',
         'SAP'  : 'SAP',
         'CSCO' : 'Cisco',
@@ -81,10 +75,10 @@ for t in tickers:
       rows=urllib2.urlopen('http://ichart.finance.yahoo.com/table.csv?'+\
                            's=%s&d=02&e=20&f=2012&g=d&a=3&b=12&c=2009'%t +\
                            '&ignore=.csv').readlines()    
-      print "Anzahl der Datensätze:  ",len(rows)-1
-      print "Struktur Datensatz:     ",rows[0]
-      print "Erster Datensatz:       ",rows[-1]
-      print "Letzter Datensatz:      ",rows[1]
+      #print "Anzahl der Datensätze:  ",len(rows)-1
+      #print "Struktur Datensatz:     ",rows[0]
+      #print "Erster Datensatz:       ",rows[-1]
+      #print "Letzter Datensatz:      ",rows[1]
 
       prices[t]=[float(r.split(',')[6]) for r in rows[1:] if r.strip()!='']
       prices[t].reverse()
@@ -94,13 +88,5 @@ for t in tickers:
       closeVals[t].reverse()
       dates[t]=[str(r.split(',')[0]) for r in rows[1:] if r.strip()!='']
       dates[t].reverse()
+      print(type(dates))
 
-
-
-# write into pandas data frame
-# Index = Dates, Columns = Tickers
-dataFrame = pd.DataFrame(prices, index=dates[tickers[0]], columns=tickers)
-
-
-# save csv-file
-dataFrame.to_csv("data/effectiveRates.csv")
