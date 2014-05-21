@@ -8,7 +8,7 @@ from sklearn.metrics import mean_absolute_error
 from sklearn import cross_validation
 
 
-dateiinhalt = pd.read_csv("src/effectiveRates.csv")
+dateiinhalt = pd.read_csv("data/effectiveRates.csv")
 
 #print("effectiveRates");
 #print(dateiinhalt);

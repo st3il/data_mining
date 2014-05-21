@@ -103,4 +103,4 @@ dataFrame = pd.DataFrame(prices, index=dates[tickers[0]], columns=tickers)
 
 
 # save csv-file
-dataFrame.to_csv("src/effectiveRates.csv")
+dataFrame.to_csv("data/effectiveRates.csv")
