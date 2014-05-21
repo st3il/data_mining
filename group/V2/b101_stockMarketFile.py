@@ -18,7 +18,7 @@ symbol_dict = {
         'CMCSA': 'Comcast',
         'CVC'  : 'Cablevision',
         'YHOO' : 'Yahoo',
-        #'DELL' : 'Dell', # rausgenommen weil mehr Datensätze drin
+        #'DELL' : 'Dell', # rausgenommen,  weil mehr Datensätze drin
         'HPQ'  : 'Hewlett-Packard',
         'AMZN' : 'Amazon',
         'TM'   : 'Toyota',

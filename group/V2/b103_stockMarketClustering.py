@@ -116,9 +116,7 @@ print "Close:        ",close
 
 
 #Berechne Differenz zw Open / Close
-#differenz  =  open - close;
 differenz = np.diff(open - close)
-
 print(differenz)
 
 
@@ -126,7 +124,7 @@ print "--------------------------similiarity matrix-----------------------------
 similiarityMatrix = np.corrcoef(differenz)
 
 # create an AffinityPropagation-Object
-ap = cl.AffinityPropagation()
+ap = cl.AffinityPropagation(affinity='precomputed')
 
 # fit to data
 ap.fit(similiarityMatrix)

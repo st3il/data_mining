@@ -5,19 +5,35 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.svm import SVR
 from sklearn.metrics import mean_absolute_error
-from sklearn import cross_validation
 
 
+#hole csv und schreibe in ein pandas Dataframe
 dateiinhalt = pd.read_csv("src/effectiveRates.csv")
 
 #print("effectiveRates");
 #print(dateiinhalt);
 
+#----------------------------------------------------------
+#hole 5 Firmen unserer Wahl
 cop = dateiinhalt[['COP', 'AXP', 'RTN', 'BA', 'AAPL']]
 
+# Plot
+#cop.plot()
+#plt.title("Aktienkurs")
+#plt.show()
+#----------------------------------------------------------
+
+
+
+
+
+
+
+#---------------------Vorhersage---------------------------
+#hole Yahoo
 yahoo = dateiinhalt['YHOO']
 
-print("Yahoo")
+print("Yahoo:")
 print(yahoo)
 #print(len(cop))
 #a = pd.np.array(dateiinhalt[[0]])
@@ -26,20 +42,21 @@ print(yahoo)
 #print(len(a))
 
 
-#time delay: 24  Anzahl der zu berucksichtigten vorhergehenden Kurswerte
-timeDelay = 24
+#time delay: Standard 24  Anzahl der zu berucksichtigten vorhergehenden Kurswerte
+#timeDelay = 24
+timeDelay = 35
+
+#Anlegen einer SVR  mit RBF Kernel (empfohlene Parameter: C = 500, epsilon = 0,6)
 svrC = 500.0
-svrE = 1.8
+#svrE = 0.6
+svrE = 1.4 #optimaler Wert: 1,4
 
 
 #
-def createCyclicData(data, timeDelay):
+def createCyclicData(data):
     # create an array with the shape nrValues X timeDelay+Value
     result = np.zeros((len(data),timeDelay+1))
 
-    # timedelay too small, return current data
-    if timeDelay == 0:
-        return data
 
     # go through each data-row
     for i in range(len(data)):
@@ -64,7 +81,7 @@ def createCyclicData(data, timeDelay):
 
 
 #Serielle Daten Yahoo
-cycleTableYahoo = createCyclicData(yahoo, timeDelay)
+cycleTableYahoo = createCyclicData(yahoo)
 
 print("cycleTableYahoo");
 print( cycleTableYahoo)
@@ -80,17 +97,10 @@ print( features)
 print( len(features))
 
 
-
-
-
-
-
-
-
 #plt.xticks(len(a), list(a))
-plt.plot(yahoo)
-
-plt.show()
+#plt.plot(yahoo)
+#plt.title("Yahoo Kurs")
+#plt.show()
 
 
 
@@ -102,14 +112,14 @@ plt.show()
 
 
 
-# Create SVR with given settings
+# Erzeuge SVR
 svr = SVR(C= svrC, epsilon= svrE, kernel='rbf')
 
 print "----------------------------Fitting---------------------------------------"
-# start fitting
+# fitting
 fittedData = svr.fit(features, targets)
 
-# data to predict: last 30 days
+# Vorhersagezeitraum
 predictDuration = 30
 predictedData = list()
 
@@ -117,7 +127,7 @@ print "----------------------------Prediction-----------------------------------
 for i in range(predictDuration):
 
     predictVector = np.zeros((timeDelay))
-    # count from 23 to 0
+
     for j in range(timeDelay-1,-1, -1):
         # what is the index of the corresponding item in the predicted data?
         idxPredict = len(predictedData)-j-1
