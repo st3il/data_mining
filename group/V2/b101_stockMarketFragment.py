@@ -1,10 +1,4 @@
-# -*- coding:utf8 -*-
 import urllib2
-#from numpy import *
-#import h5py
-import numpy as np
-import pandas as pd
-from matplotlib import pyplot as plt
 
 symbol_dict = {
         'TOT'  : 'Total',

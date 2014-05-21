@@ -1,10 +1,5 @@
-# -*- coding:utf8 -*-
 import urllib2
-#from numpy import *
-#import h5py
-import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
 
 symbol_dict = {
         'TOT'  : 'Total',
@@ -103,4 +98,4 @@ dataFrame = pd.DataFrame(prices, index=dates[tickers[0]], columns=tickers)
 
 
 # save csv-file
-dataFrame.to_csv("src/effectiveRates.csv")
+dataFrame.to_csv("data/effectiveRates.csv")
