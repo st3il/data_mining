@@ -52,7 +52,14 @@ def getRecommendations(pref, person, similarity):
     print topList
 
     #todo hole alle Filme, die bewertet werden sollen
+    movieList = []
+    for name in pref:
+        #print pref[name]
+        for (i, movie) in enumerate(pref[name]):
+           movieList.append(movie)
 
+    movieList = list(set(movieList))
+    print movieList
 
 
     #todo berechne fuer jeden Film den Empfehlungswert pro aenhlicher Person
