@@ -47,7 +47,7 @@ def getRecommendations(pref, person, similarity):
     topList = topMatches(reco.critics, person, reco.sim_pearson)
     #remove movies rated with -1.0
     for item in topList:
-        if(item[1] == -1.0):
+        if(item[1] < 0):
             topList.remove(item)
     print topList
 
@@ -59,25 +59,43 @@ def getRecommendations(pref, person, similarity):
            movieList.append(movie)
 
     movieList = list(set(movieList))
-    print movieList
-
 
     #todo berechne fuer jeden Film den Empfehlungswert pro aenhlicher Person
 
-    #todo berechne Summe fuer jeden Film
-
-    #todo berechne Mittelwert fuer jeden Film
-
-    #todo berechne Mittelwert durch Summe --> das ist der jeweilige Empfehlungswert
+    recommendationList = {}
 
 
+    for j in movieList:
+        print("___________________Movie: %s_________________" %j)
+        recommendationSumSingleMovie = 0
+        ksum = 0
+
+        for k in topList:
+            if(pref[k[0]].has_key(j)):
+                #print("Recommendation of %s : " %k[0])
+                #print(pref[k[0]][j])
+                recommendationSumSingleMovie = recommendationSumSingleMovie + pref[k[0]][j] * k[1]
+                ksum = ksum + k[1]
+
+        #print("Summe:")
+        #print(recommendationSumSingleMovie)
+        #print("KSumme:")
+        #print(ksum)
+        #print("Empfehlung:")
+        #print(recommendationSumSingleMovie/ksum)
+        recommendationList[j] = recommendationSumSingleMovie/ksum
 
 
-    #todo
 
+    #Sortiere list:
+    recommendationList = sorted(recommendationList.items(), key=lambda x: x[1], reverse=True)
 
+    #reverse inside tupel
+    for (z,i) in enumerate(recommendationList):
+        recommendationList[z] = recommendationList[z][::-1]
 
-    return 0;
+    print(recommendationList)
+    return recommendationList;
 
 
 
