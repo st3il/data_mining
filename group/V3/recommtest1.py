@@ -3,17 +3,8 @@ import recommendationsTemplate as reco
 
 # Aufgabe 2.2
 def topMatches(pref, person, similarity):
-    #todo return List with similar person
-    #print "def topMatches"
-
-    #sim_euclid(prefs,person1,person2,normed=False):
-    person2 = "Gene Seymour"
-
-
     dictPerson = {}
-
     for i in pref:
-
         if person != i:
             #unterscheide Euklid Methode oder Pearson
             if(similarity == reco.sim_euclid):
@@ -22,8 +13,6 @@ def topMatches(pref, person, similarity):
             else:
                 #Pearson Methode
                 similarityList = similarity(pref, person, i)
-
-
             #print("Similarity between %s and %s" % (person, i))
             #print(similarityList)
             #print("_________________________________________________________")
@@ -39,13 +28,13 @@ def topMatches(pref, person, similarity):
     dictPerson = sorted(dictPerson.items(), key=lambda x: x[1], reverse=True)
     #print(dictPerson)
 
-    return  dictPerson
+    return dictPerson
 
 
-print("Euklid")
-topMatches(reco.critics, "Toby", reco.sim_euclid)
-print("Pearson")
-topMatches(reco.critics, "Toby", reco.sim_pearson)
+#print("Euklid")
+#print topMatches(reco.critics, "Toby", reco.sim_euclid)
+#print("Pearson")
+#print topMatches(reco.critics, "Toby", reco.sim_pearson)
 
 
 
@@ -56,7 +45,11 @@ def getRecommendations(pref, person, similarity):
 
     #beziehe die aehnlichen Personen todo alle korrelationswerte holen
     topList = topMatches(reco.critics, person, reco.sim_pearson)
-    print(topList)
+    #remove movies rated with -1.0
+    for item in topList:
+        if(item[1] == -1.0):
+            topList.remove(item)
+    print topList
 
     #todo hole alle Filme, die bewertet werden sollen
 
