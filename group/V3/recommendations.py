@@ -1,5 +1,3 @@
-from math import sqrt
-
 def createLastfmUserDict(group):
     userDict = dict()
     AllBands = set()

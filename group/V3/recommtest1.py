@@ -41,9 +41,9 @@ def topMatches(pref, person, similarity):
 
 #Aufgabe 2.3.1
 def getRecommendations(pref, person, similarity):
-    #todo berechne Empfehlungswerte fuer Person
+    #berechne Empfehlungswerte fuer Person
 
-    #beziehe die aehnlichen Personen todo alle korrelationswerte holen
+    #beziehe die aehnlichen Personen, alle korrelationswerte holen
     topList = topMatches(pref, person, similarity)
     #remove movies rated with -1.0
     for item in topList:
@@ -51,7 +51,7 @@ def getRecommendations(pref, person, similarity):
             topList.remove(item)
     #print topList
 
-    #todo hole alle Filme, die bewertet werden sollen
+    #hole alle Filme, die bewertet werden sollen
     movieList = []
     for name in pref:
         #print pref[name]
@@ -60,11 +60,8 @@ def getRecommendations(pref, person, similarity):
 
     movieList = list(set(movieList))
 
-    #todo berechne fuer jeden Film den Empfehlungswert pro aenhlicher Person
-
+    #berechne fuer jeden Film den Empfehlungswert pro aenhlicher Person
     recommendationList = {}
-
-
     for j in movieList:
         #print("___________________Movie: %s_________________" %j)
         recommendationSumSingleMovie = 0
@@ -84,9 +81,6 @@ def getRecommendations(pref, person, similarity):
         #print("Empfehlung:")
         #print(recommendationSumSingleMovie/ksum)
         recommendationList[j] = recommendationSumSingleMovie/ksum
-
-
-
     #Sortiere list:
     recommendationList = sorted(recommendationList.items(), key=lambda x: x[1], reverse=True)
 
@@ -95,7 +89,7 @@ def getRecommendations(pref, person, similarity):
         recommendationList[z] = recommendationList[z][::-1]
 
     #print(recommendationList)
-    return recommendationList;
+    return recommendationList
 
 
 
@@ -110,15 +104,11 @@ def transformCritics(critics):
     newCritics  ={}
     movieList = []
 
-
-
     for name in critics:
         #print pref[name]
         for (i, movie) in enumerate(critics[name]):
            movieList.append(movie)
     movieList = list(set(movieList))
-
-
 
     for z in movieList:
         personDict = {}
@@ -128,13 +118,9 @@ def transformCritics(critics):
 
 
         newCritics[z] = personDict
-
-
-    print("New Critics")
-    print(newCritics)
-
-
-    return newCritics;
+    #print("New Critics")
+    #print(newCritics)
+    return newCritics
 
 
 #transCritics = transformCritics(reco.critics)
