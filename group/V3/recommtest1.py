@@ -1,10 +1,9 @@
 import recommendationsTemplate as reco
-import operator
 
 
 # Aufgabe 2.2
 def topMatches(pref, person, similarity):
-    dictPerson = dict()
+    dictPerson = {}
     for i in pref:
         if person != i:
             #unterscheide Euklid Methode oder Pearson
@@ -39,7 +38,7 @@ def topMatches(pref, person, similarity):
 #print("Euklid")
 #print topMatches(reco.critics, "Toby", reco.sim_euclid)
 #print("Pearson")
-#print topMatches(reco.critics, "Toby", reco.sim_pearson)
+print topMatches(reco.critics, "Toby", reco.sim_pearson)
 
 
 
@@ -137,30 +136,28 @@ transCritics = transformCritics(reco.critics)
 #print topMatches(transCritics, "Lady in the Water", reco.sim_pearson)
 
 
-def calculateSimilarItems(critics):
-    #todo berechne eine Dictionary, welches die Aehnlichkeit zw allen Filmen darstellt
+def calculateSimilarItems(critics, similarity):
+    #berechne eine Dictionary, welches die Aehnlichkeit zw allen Filmen darstellt
     # Vorraussetzung: Keys sind Filme, keine Personen
 
     similarityItems = {}
 
 
     for i in critics:
-        similarityItems[i] = topMatches(critics, i, reco.sim_euclid)
+        similarityItems[i] = topMatches(critics, i,  similarity)
 
 
     #print(similarityItems)
     return similarityItems;
 
-calculateSimilarItems(transCritics)
+calculateSimilarItems(transCritics, reco.sim_euclid)
 
 
 
 def getRecommendedItems(critics, person, similarity):
-    #todo : berechne empfehlungswerte fuer die noch nicht gekauften Filme
-
+    #berechne empfehlungswerte fuer die noch nicht gekauften Filme
 
     recommendedItems = {}
-
 
 
     #transformiere critics
@@ -172,22 +169,29 @@ def getRecommendedItems(critics, person, similarity):
     #alle Filme
     allMovies = {y for y in transCritics}
 
-
     #noch nicht von Person bewertet
     unboughtItems = allMovies.difference(personalMovies)
 
+    similarItems = calculateSimilarItems(transCritics, similarity)
 
-    similarItems = calculateSimilarItems(transCritics)
-    # for k in unboughtItems:
-    #     print k
-    #     print "____________"
-    #     for l in personalMovies:
-    #         print(similarItems[k][1])
+    for k in unboughtItems:
+         sumfactor = 0
+         sum = 0
 
+         for l in personalMovies:
+             #Pearson falls Wert <0
+             if similarItems[k][l]>0:
+                 sum = sum + similarItems[k][l]
+                 sumfactor = sumfactor + (critics[person][l] * similarItems[k][l])
+         if(sum != 0):
+            normalized = sumfactor/sum
+         else:
+            normalized = 0
+         recommendedItems[k] = normalized
 
+    return recommendedItems;
 
-    return ;
-
-getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
-#transCritics = transformCritics(reco.critics)
-#print topMatches(reco.critics, "Lady in the Water", reco.sim_euclid)
+recomItem = getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
+#print recomItem
+transCritics = transformCritics(reco.critics)
+print topMatches(transCritics, "Lady in the Water", reco.sim_euclid)
