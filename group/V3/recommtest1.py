@@ -1,6 +1,5 @@
 import recommendationsTemplate as reco
 
-
 # Aufgabe 2.2
 def topMatches(pref, person, similarity):
     dictPerson = {}
@@ -30,7 +29,7 @@ def topMatches(pref, person, similarity):
 
 
 #print("Euklid")
-print topMatches(reco.critics, "Toby", reco.sim_euclid)
+#print topMatches(reco.critics, "Toby", reco.sim_euclid)
 #print("Pearson")
 #print topMatches(reco.critics, "Toby", reco.sim_pearson)
 
@@ -44,11 +43,9 @@ def getRecommendations(pref, person, similarity):
     #beziehe die aehnlichen Personen, alle korrelationswerte holen
     topList = topMatches(pref, person, similarity)
     #remove movies rated with -1.0
-    tmp = dict()
-    for k,v in enumerate(topList):
-        if(topList[v] >= 0):
-            tmp[v] = topList[v]
-    topList = tmp
+    for item in topList:
+        if item[1] == -1.0:
+            topList.remove(item)
     #print topList
 
     #hole alle Filme, die bewertet werden sollen
@@ -69,12 +66,12 @@ def getRecommendations(pref, person, similarity):
         recommendationSumSingleMovie = 0
         ksum = 0
 
-        for k,v in enumerate(topList):
-            if(pref[v].has_key(j)):
+        for v in topList:
+            if(pref[v[0]].has_key(j)):
                 #print("Recommendation of %s : " %k[0])
                 #print(pref[k[0]][j])
-                recommendationSumSingleMovie = recommendationSumSingleMovie + pref[v][j] * topList[v]
-                ksum = ksum + topList[v]
+                recommendationSumSingleMovie = recommendationSumSingleMovie + pref[v[0]][j] * v[1]
+                ksum = ksum + v[1]
 
         #print("Summe:")
         #print(recommendationSumSingleMovie)
@@ -96,8 +93,7 @@ def getRecommendations(pref, person, similarity):
 
 
 
-#getRecommendations(reco.critics, "Toby", reco.sim_pearson)
-
+#print getRecommendations(reco.critics, "Toby", reco.sim_pearson)
 
 #Aufgabe 2.4
 
@@ -153,10 +149,6 @@ def getRecommendedItems(critics, person, similarity):
 
     recommendedItems = {}
 
-
-
-
-
     #transformiere critics
     transCritics = transformCritics(reco.critics)
 
@@ -180,8 +172,6 @@ def getRecommendedItems(critics, person, similarity):
 
         similarItemsDict[w] = tempDict
 
-
-
     for k in unboughtItems:
          sumfactor = 0
          sum = 0
@@ -197,9 +187,8 @@ def getRecommendedItems(critics, person, similarity):
             normalized = 0
          recommendedItems[k] = normalized
 
-    return recommendedItems;
+    return recommendedItems
 
-recomItem = getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
-print recomItem
+print getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
 #transCritics = transformCritics(reco.critics)
 #print topMatches(transCritics, "Lady in the Water", reco.sim_euclid)
