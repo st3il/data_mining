@@ -26,7 +26,7 @@ def topMatches(pref, person, similarity):
     #print("Sorted Dict:")
     #sort Lisr
     dictPerson = sorted(dictPerson.items(), key=lambda x: x[1], reverse=True)
-    #print(dictPerson)
+    print(dictPerson)
     tmp = dict()
     for person in dictPerson:
         tmp[person[0]] = person[1]
@@ -36,9 +36,9 @@ def topMatches(pref, person, similarity):
 
 
 #print("Euklid")
-#print topMatches(reco.critics, "Toby", reco.sim_euclid)
+print topMatches(reco.critics, "Toby", reco.sim_euclid)
 #print("Pearson")
-print topMatches(reco.critics, "Toby", reco.sim_pearson)
+#print topMatches(reco.critics, "Toby", reco.sim_pearson)
 
 
 
@@ -102,7 +102,7 @@ def getRecommendations(pref, person, similarity):
 
 
 
-getRecommendations(reco.critics, "Toby", reco.sim_pearson)
+#getRecommendations(reco.critics, "Toby", reco.sim_pearson)
 
 
 #Aufgabe 2.4
@@ -150,7 +150,7 @@ def calculateSimilarItems(critics, similarity):
     #print(similarityItems)
     return similarityItems;
 
-calculateSimilarItems(transCritics, reco.sim_euclid)
+#calculateSimilarItems(transCritics, reco.sim_euclid)
 
 
 
@@ -191,7 +191,7 @@ def getRecommendedItems(critics, person, similarity):
 
     return recommendedItems;
 
-recomItem = getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
+#recomItem = getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
 #print recomItem
-transCritics = transformCritics(reco.critics)
-print topMatches(transCritics, "Lady in the Water", reco.sim_euclid)
+#transCritics = transformCritics(reco.critics)
+#print topMatches(transCritics, "Lady in the Water", reco.sim_euclid)
