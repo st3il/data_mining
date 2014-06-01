@@ -44,12 +44,12 @@ def getRecommendations(pref, person, similarity):
     #todo berechne Empfehlungswerte fuer Person
 
     #beziehe die aehnlichen Personen todo alle korrelationswerte holen
-    topList = topMatches(reco.critics, person, similarity)
+    topList = topMatches(pref, person, similarity)
     #remove movies rated with -1.0
     for item in topList:
         if(item[1] < 0):
             topList.remove(item)
-    print topList
+    #print topList
 
     #todo hole alle Filme, die bewertet werden sollen
     movieList = []
@@ -66,7 +66,7 @@ def getRecommendations(pref, person, similarity):
 
 
     for j in movieList:
-        print("___________________Movie: %s_________________" %j)
+        #print("___________________Movie: %s_________________" %j)
         recommendationSumSingleMovie = 0
         ksum = 0
 
@@ -94,12 +94,12 @@ def getRecommendations(pref, person, similarity):
     for (z,i) in enumerate(recommendationList):
         recommendationList[z] = recommendationList[z][::-1]
 
-    print(recommendationList)
+    #print(recommendationList)
     return recommendationList;
 
 
 
-getRecommendations(reco.critics, "Toby", reco.sim_pearson)
+#getRecommendations(reco.critics, "Toby", reco.sim_pearson)
 
 
 #Aufgabe 2.4
@@ -137,5 +137,5 @@ def transformCritics(critics):
     return newCritics;
 
 
-transCritics = transformCritics(reco.critics)
+#transCritics = transformCritics(reco.critics)
 #print topMatches(reco.critics, "Lady in the Water", reco.sim_euclid)
