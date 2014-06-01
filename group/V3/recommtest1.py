@@ -49,7 +49,7 @@ def getRecommendations(pref, person, similarity):
     for item in topList:
         if(item[1] < 0):
             topList.remove(item)
-    print topList
+    #print topList
 
     #todo hole alle Filme, die bewertet werden sollen
     movieList = []
@@ -66,7 +66,7 @@ def getRecommendations(pref, person, similarity):
 
 
     for j in movieList:
-        print("___________________Movie: %s_________________" %j)
+        #print("___________________Movie: %s_________________" %j)
         recommendationSumSingleMovie = 0
         ksum = 0
 
@@ -94,7 +94,8 @@ def getRecommendations(pref, person, similarity):
     for (z,i) in enumerate(recommendationList):
         recommendationList[z] = recommendationList[z][::-1]
 
-    print(recommendationList)
+   # print("Recommendation List for %s: " %person)
+    #print(recommendationList)
     return recommendationList;
 
 
@@ -130,12 +131,67 @@ def transformCritics(critics):
         newCritics[z] = personDict
 
 
-    print("New Critics")
-    print(newCritics)
+    #print("New Critics")
+    #print(newCritics)
 
 
     return newCritics;
 
 
 transCritics = transformCritics(reco.critics)
-#print topMatches(reco.critics, "Lady in the Water", reco.sim_euclid)
+#print topMatches(transCritics, "Lady in the Water", reco.sim_pearson)
+
+
+def calculateSimilarItems(critics):
+    #todo berechne eine Dictionary, welches die Aehnlichkeit zw allen Filmen darstellt
+    # Vorraussetzung: Keys sind Filme, keine Personen
+
+    similarityItems = {}
+
+
+    for i in critics:
+        similarityItems[i] = topMatches(critics, i, reco.sim_euclid)
+
+
+    #print(similarityItems)
+    return similarityItems;
+
+calculateSimilarItems(transCritics)
+
+
+
+def getRecommendedItems(critics, person, similarity):
+    #todo : berechne empfehlungswerte fuer die noch nicht gekauften Filme
+
+
+    recommendedItems = {}
+
+
+
+    #transformiere critics
+    transCritics = transformCritics(reco.critics)
+
+    #von Person bewertete Filme
+    personalMovies = {x for x in critics[person]}
+
+    #alle Filme
+    allMovies = {y for y in transCritics}
+
+
+    #noch nicht von Person bewertet
+    unboughtItems = allMovies.difference(personalMovies)
+
+
+    similarItems = calculateSimilarItems(transCritics)
+    for k in unboughtItems:
+        print k
+        print "____________"
+        for l in personalMovies:
+            print(similarItems[k][1])
+
+
+
+
+    return ;
+
+getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
