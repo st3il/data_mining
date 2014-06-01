@@ -154,6 +154,9 @@ def getRecommendedItems(critics, person, similarity):
     recommendedItems = {}
 
 
+
+
+
     #transformiere critics
     transCritics = transformCritics(reco.critics)
 
@@ -168,15 +171,26 @@ def getRecommendedItems(critics, person, similarity):
 
     similarItems = calculateSimilarItems(transCritics, similarity)
 
+    similarItemsDict = {}
+
+    for w in similarItems:
+        tempDict = {}
+        for y in similarItems[w]:
+            tempDict[y[0]] = y[1]
+
+        similarItemsDict[w] = tempDict
+
+
+
     for k in unboughtItems:
          sumfactor = 0
          sum = 0
 
          for l in personalMovies:
              #Pearson falls Wert <0
-             if similarItems[k][l]>0:
-                 sum = sum + similarItems[k][l]
-                 sumfactor = sumfactor + (critics[person][l] * similarItems[k][l])
+             if similarItemsDict[k][l]>0:
+                 sum = sum + similarItemsDict[k][l]
+                 sumfactor = sumfactor + (critics[person][l] * similarItemsDict[k][l])
          if(sum != 0):
             normalized = sumfactor/sum
          else:
@@ -185,7 +199,7 @@ def getRecommendedItems(critics, person, similarity):
 
     return recommendedItems;
 
-#recomItem = getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
-#print recomItem
+recomItem = getRecommendedItems(reco.critics, "Toby", reco.sim_euclid)
+print recomItem
 #transCritics = transformCritics(reco.critics)
 #print topMatches(transCritics, "Lady in the Water", reco.sim_euclid)
