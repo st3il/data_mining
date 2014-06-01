@@ -1,9 +1,10 @@
 import recommendationsTemplate as reco
+import operator
 
 
 # Aufgabe 2.2
 def topMatches(pref, person, similarity):
-    dictPerson = {}
+    dictPerson = dict()
     for i in pref:
         if person != i:
             #unterscheide Euklid Methode oder Pearson
@@ -27,6 +28,10 @@ def topMatches(pref, person, similarity):
     #sort Lisr
     dictPerson = sorted(dictPerson.items(), key=lambda x: x[1], reverse=True)
     #print(dictPerson)
+    tmp = dict()
+    for person in dictPerson:
+        tmp[person[0]] = person[1]
+    dictPerson = tmp
 
     return dictPerson
 
@@ -46,9 +51,11 @@ def getRecommendations(pref, person, similarity):
     #beziehe die aehnlichen Personen, alle korrelationswerte holen
     topList = topMatches(pref, person, similarity)
     #remove movies rated with -1.0
-    for item in topList:
-        if(item[1] < 0):
-            topList.remove(item)
+    tmp = dict()
+    for k,v in enumerate(topList):
+        if(topList[v] >= 0):
+            tmp[v] = topList[v]
+    topList = tmp
     #print topList
 
     #hole alle Filme, die bewertet werden sollen
@@ -69,12 +76,12 @@ def getRecommendations(pref, person, similarity):
         recommendationSumSingleMovie = 0
         ksum = 0
 
-        for k in topList:
-            if(pref[k[0]].has_key(j)):
+        for k,v in enumerate(topList):
+            if(pref[v].has_key(j)):
                 #print("Recommendation of %s : " %k[0])
                 #print(pref[k[0]][j])
-                recommendationSumSingleMovie = recommendationSumSingleMovie + pref[k[0]][j] * k[1]
-                ksum = ksum + k[1]
+                recommendationSumSingleMovie = recommendationSumSingleMovie + pref[v][j] * topList[v]
+                ksum = ksum + topList[v]
 
         #print("Summe:")
         #print(recommendationSumSingleMovie)
@@ -92,11 +99,11 @@ def getRecommendations(pref, person, similarity):
 
    # print("Recommendation List for %s: " %person)
     #print(recommendationList)
-    return recommendationList;
+    return recommendationList
 
 
 
-#getRecommendations(reco.critics, "Toby", reco.sim_pearson)
+getRecommendations(reco.critics, "Toby", reco.sim_pearson)
 
 
 #Aufgabe 2.4
@@ -124,13 +131,6 @@ def transformCritics(critics):
     #print("New Critics")
     #print(newCritics)
     return newCritics
-
-
-    #print("New Critics")
-    #print(newCritics)
-
-
-    return newCritics;
 
 
 transCritics = transformCritics(reco.critics)
@@ -178,12 +178,11 @@ def getRecommendedItems(critics, person, similarity):
 
 
     similarItems = calculateSimilarItems(transCritics)
-    for k in unboughtItems:
-        print k
-        print "____________"
-        for l in personalMovies:
-            print(similarItems[k][1])
-
+    # for k in unboughtItems:
+    #     print k
+    #     print "____________"
+    #     for l in personalMovies:
+    #         print(similarItems[k][1])
 
 
 
