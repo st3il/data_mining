@@ -26,12 +26,6 @@ def topMatches(pref, person, similarity):
     #print("Sorted Dict:")
     #sort Lisr
     dictPerson = sorted(dictPerson.items(), key=lambda x: x[1], reverse=True)
-    print(dictPerson)
-    tmp = dict()
-    for person in dictPerson:
-        tmp[person[0]] = person[1]
-    dictPerson = tmp
-
     return dictPerson
 
 
