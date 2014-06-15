@@ -76,8 +76,8 @@ for feed in test:
         countnews['test']+=1
 print "\n----------------------------------------------------------------"
 
-print 'Number of used trainings samples in categorie tech',countnews['tech']
-print 'Number of used trainings samples in categorie notech',countnews['nontech']
+print 'Number of used trainingsamples in categorie tech',countnews['tech']
+print 'Number of used trainingsamples in categorie notech',countnews['nontech']
 
 
 print 'Number of used test samples',countnews['test']
