@@ -1,9 +1,21 @@
 import string
 
 class Classifier:
+    # Dictionairy for words
     fc = dict()
+
+    # Dictionairy for category
     cc = dict()
+
+    # Function
     getfeatures = 0
+
+    # minimal length
+    minWordlength = 2
+
+    # maximal length
+    maxWordLength = 20
+
     def __init__(self,fn):
         #init cc with both categories
         self.cc['good'] = 0
@@ -13,7 +25,6 @@ class Classifier:
     #increments word counter
     def incf(self,f,cat):
         #check f word is already in fc
-
         if(self.fc.has_key(f)!=True):
             self.fc[f] = {"good":0, "bad":0}
 
@@ -45,20 +56,18 @@ class Classifier:
     #train given sentence for given category
     def train(self,item,cat):
         #get words of sentence
-        words = self.getfeatures(item,3,20)
+        words = self.getfeatures(item,self.minWordlength,self.maxWordLength)
         for word in words:
             #add each word to cf
-            print "Word: '%s'" % word
-            print "added to: '%s'" % cat
+            #print "Word: '%s'" % word
+            #print "added to: '%s'" % cat
             self.incf(word,cat)
         #increment category counter
         self.incc(cat)
 
     #return probability of given word in given category
     def fprob(self,f,cat):
-
         fprobresult = 0.0
-
         fcount = float(self.fcount(f,cat))
         catcount = float(self.catcount(cat))
 
@@ -72,50 +81,37 @@ class Classifier:
     def weightedprob(self,f,cat):
 
         initprob = float(0.5)
-
-
-        #fcount = float(self.fcount(f,cat)) ??
-        # total number of given word
-        fcount = self.fcount(f,"good") + self.fcount(f,"bad")
-
+        count = self.fcount(f,"good") + self.fcount(f,"bad")
 
         fprob = float(self.fprob(f,cat))
-        result = float((initprob + fcount * fprob)/(1 + fcount))
+        result = float((initprob + count * fprob)/(1 + count))
 
-        print("Prob of Word '%s' in %s : %s" %(f, cat, result))
+        #print("Prob of Word '%s' in %s : %s" %(f, cat, result))
 
         return result
 
     #return probability of given category
     def catprob(self,cat):
-        catporbresult = 0.0
+        catprobresult = 0.0
         amountCat = float(self.catcount(cat))
         totalCount = float(self.totalcount())
         catporbresult = (amountCat / totalCount)
-        return catporbresult
+        return catprobresult
 
 
     #returns probability if given document is in given category
     def prob(self,item,cat):
         probresult = 0.0
-        words = self.getfeatures(item, 3, 10)
-
-        print(words)
-
+        words = self.getfeatures(item, self.minWordlength, self.maxWordLength)
         tmp = 0.0
         for word in words:
             if(tmp == 0.0):
-               # print "temp init"
                 tmp = self.weightedprob(word,cat)
-               # print tmp
-
             else:
                 tmp = tmp * self.weightedprob(word,cat)
-               # print tmp
-        print("Prob of '%s' in %s : %s" %(item, cat, tmp * self.catprob(cat)))
+        #print("Prob of '%s' in %s : %s" %(item, cat, tmp * self.catprob(cat)))
 
         catprob = self.catprob(cat)
-
         probresult = tmp * catprob
 
         return probresult
@@ -150,29 +146,6 @@ corpus = [["nobody owns the water", "good"],
 for sentence in corpus:
     classifier.train(sentence[0], sentence[1])
 
-
-print "________________________________________________________"
-
-print "Number of good documents: "
-print classifier.catcount("good")
-
-
-print "Number of bad documents: "
-print classifier.catcount("bad")
-
-
-print "Number of total documents: "
-print classifier.totalcount()
-
-
-print "________________________________________________________"
-
-
-
-# print(classifier.fprob("money", "bad"))
-
-#print classifier.fc
-#print classifier.cc
 
 
 def showProb(string ):
