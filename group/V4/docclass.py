@@ -162,13 +162,16 @@ def showProb(string ):
     print classifier.cc
     print classifier.fc
 
-    print("good")
+    print("Probability of Good:")
     print(probGood)
-    print("bad")
+
+    print("Probability of Bad")
     print(probBad)
+    print "Result: " + max({"Good": probGood, "Bad": probBad})
+
 
 #print classifier.fc
-#showProb("the money jumps")
+showProb("the money jumps")
 
 
 
