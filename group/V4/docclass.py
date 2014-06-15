@@ -3,10 +3,8 @@ import string
 class Classifier:
     # Dictionairy for words
     fc = dict()
-
     # Dictionairy for category
     cc = dict()
-
     # Function
     getfeatures = 0
 
@@ -18,20 +16,24 @@ class Classifier:
 
     def __init__(self,fn):
         #init cc with both categories
-        self.cc['good'] = 0
-        self.cc['bad'] = 0
+        self.cc = dict()
         self.getfeatures = fn
 
     #increments word counter
     def incf(self,f,cat):
         #check f word is already in fc
         if(self.fc.has_key(f)!=True):
-            self.fc[f] = {"good":0, "bad":0}
+            self.fc[f] = dict()
 
-        self.fc[f][cat] = self.fc[f][cat] + 1
+        if self.fc[f].has_key(cat) != True:
+			self.fc[f][cat] = 0
+
+        self.fc[f][cat] += 1
 
     #increments category counter
     def incc(self,cat):
+        if(self.cc.has_key(cat) != True):
+            self.cc[cat] = 0
         if(self.cc.has_key(cat)):
             self.cc[cat] = self.cc[cat] + 1
 
@@ -51,7 +53,7 @@ class Classifier:
 
     #returns counters of both categories
     def totalcount(self):
-        return self.cc['good'] + self.cc['bad']
+        return sum(self.cc.values())
 
     #train given sentence for given category
     def train(self,item,cat):
@@ -80,8 +82,11 @@ class Classifier:
     #add smoothing to avoid extreme probabilities
     def weightedprob(self,f,cat):
 
-        initprob = float(0.5)
-        count = self.fcount(f,"good") + self.fcount(f,"bad")
+        initprob = 1.0/len(self.cc)
+        if(self.fc.has_key(f)):
+            count = sum(self.fc[f].values())
+        else:
+            count = 0.0
 
         fprob = float(self.fprob(f,cat))
         result = float((initprob + count * fprob)/(1 + count))
@@ -95,7 +100,7 @@ class Classifier:
         catprobresult = 0.0
         amountCat = float(self.catcount(cat))
         totalCount = float(self.totalcount())
-        catporbresult = (amountCat / totalCount)
+        catprobresult = (amountCat / totalCount)
         return catprobresult
 
 
@@ -103,12 +108,11 @@ class Classifier:
     def prob(self,item,cat):
         probresult = 0.0
         words = self.getfeatures(item, self.minWordlength, self.maxWordLength)
-        tmp = 0.0
+        tmp = 1.0
+
         for word in words:
-            if(tmp == 0.0):
-                tmp = self.weightedprob(word,cat)
-            else:
-                tmp = tmp * self.weightedprob(word,cat)
+            tmp *= self.weightedprob(word,cat)
+
         #print("Prob of '%s' in %s : %s" %(item, cat, tmp * self.catprob(cat)))
 
         catprob = self.catprob(cat)
@@ -122,7 +126,7 @@ def getwords(doc, minLength, maxLength):
     back = dict()
     tmp = string.split(string.lower(doc))
     for word in tmp:
-        if(len(word) > minLength and len(word) < maxLength):
+        if(len(word) >= minLength and len(word) <= maxLength):
             back[word] = 1
     return back
 
@@ -152,11 +156,11 @@ def showProb(string ):
     g = classifier.prob(string, "good")
     b = classifier.prob(string, "bad")
 
-    print g
-    print b
-
     probGood = g/(g+b)
     probBad = b/(g+b)
+
+    print classifier.cc
+    print classifier.fc
 
     print("good")
     print(probGood)
@@ -164,7 +168,7 @@ def showProb(string ):
     print(probBad)
 
 #print classifier.fc
-showProb("the money jumps")
+#showProb("the money jumps")
 
 
 
