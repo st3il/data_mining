@@ -37,10 +37,10 @@ test=["http://rss.golem.de/rss.php?r=sw&feed=RSS0.91",
           'http://www.welt.de/?service=Rss'
            ]
 
-countnews={}
-countnews['tech']=0
-countnews['nontech']=0
-countnews['test']=0
+freedcounter={}
+freedcounter['tech']=0
+freedcounter['nontech']=0
+freedcounter['test']=0
 
 print "--------------------Training Tech------------------------"
 for feed in trainTech:
@@ -48,23 +48,29 @@ for feed in trainTech:
     for e in f.entries:
       newsString = stripHTML(e.title+' '+e.description)
       myClassifier.train(newsString, "Tech")
-      countnews['tech']+=1
+      freedcounter['tech']+=1
 print "--------------------Training NonTech------------------------"
 for feed in trainNonTech:
     f=feedparser.parse(feed)
     for e in f.entries:
       newsString = stripHTML(e.title+' '+e.description)
       myClassifier.train(newsString, "NonTech")
-      countnews['nontech']+=1
+      freedcounter['nontech']+=1
 print "--------------------Testing------------------------"
+#loop through test feeds
 for feed in test:
+    #get feeds
     f=feedparser.parse(feed)
+    #get text of every feed
     for e in f.entries:
         print "________________________________"
+        #remove html entities
         newsString = stripHTML(e.title+' '+e.description)
+        #get probabilities of tech and nontech
         tech = myClassifier.prob(newsString, 'Tech')
         nontech = myClassifier.prob(newsString, 'NonTech')
-
+        
+        #calculate probabilities
         resultTech = tech / (tech+nontech)
         resultNonTech = nontech / (tech+nontech)
 
@@ -72,13 +78,13 @@ for feed in test:
         print newsString
         print "Results for (Tech:%.3f / NonTech: %0.3f)" % (resultTech, resultNonTech)
 
-
-        countnews['test']+=1
+        #increase test counter
+        freedcounter['test']+=1
 print "\n----------------------------------------------------------------"
 
-print 'Number of used trainingsamples in categorie tech',countnews['tech']
-print 'Number of used trainingsamples in categorie notech',countnews['nontech']
+print 'Number of used trainingsamples in categorie tech',freedcounter['tech']
+print 'Number of used trainingsamples in categorie notech',freedcounter['nontech']
 
 
-print 'Number of used test samples',countnews['test']
+print 'Number of used test samples',freedcounter['test']
 

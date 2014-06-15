@@ -131,7 +131,7 @@ def getwords(doc, minLength, maxLength):
     return back
 
 
-doc1 = "This is a String with lower and UPPER case Letters, for testing our new Algorithm. Maybe english is better than german, who knows. thatsaprettylongwordtotestifitgetsremovedinmyfuntion"
+#doc1 = "This is a String with lower and UPPER case Letters, for testing our new Algorithm. Maybe english is better than german, who knows. thatsaprettylongwordtotestifitgetsremovedinmyfuntion"
 
 #res = getwords(doc1,3,20)
 #print res
@@ -153,14 +153,15 @@ for sentence in corpus:
 
 
 def showProb(string ):
+    #get probability of string is in good category
     g = classifier.prob(string, "good")
+
+    #get probability of string is in bad category
     b = classifier.prob(string, "bad")
 
+    #calculate probabilities
     probGood = g/(g+b)
     probBad = b/(g+b)
-
-    print classifier.cc
-    print classifier.fc
 
     print("Probability of Good:")
     print(probGood)
