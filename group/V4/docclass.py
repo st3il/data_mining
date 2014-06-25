@@ -26,7 +26,7 @@ class Classifier:
             self.fc[f] = dict()
 
         if self.fc[f].has_key(cat) != True:
-			self.fc[f][cat] = 0
+            self.fc[f][cat] = 0
 
         self.fc[f][cat] += 1
 
@@ -133,23 +133,6 @@ def getwords(doc, minLength, maxLength):
 
 #doc1 = "This is a String with lower and UPPER case Letters, for testing our new Algorithm. Maybe english is better than german, who knows. thatsaprettylongwordtotestifitgetsremovedinmyfuntion"
 
-#res = getwords(doc1,3,20)
-#print res
-
-classifier = Classifier(getwords)
-
-corpus = [["nobody owns the water", "good"],
-          ["the quick rabbit jumps fences", "good"],
-          ["buy pharmaceuticals now","bad"],
-          ["make quick money at the online casino","bad"],
-          ["the quick brown fox jumps","good"] ,
-          ["next meeting is at night","good"],
-          ["meeting with your superstar","good"] ,
-          ["money like water","bad"]]
-
-for sentence in corpus:
-    classifier.train(sentence[0], sentence[1])
-
 
 
 def showProb(string ):
@@ -171,8 +154,26 @@ def showProb(string ):
     print "Result: " + max({"Good": probGood, "Bad": probBad})
 
 
-#print classifier.fc
-showProb("the money jumps")
+
+if __name__ == "__main__":
+
+    doc1 = "This is a String with lower and UPPER case Letters, for testing our new Algorithm. Maybe english is better than german, who knows. thatsaprettylongwordtotestifitgetsremovedinmyfuntion"
+
+    classifier = Classifier(getwords)
+
+    corpus = [["nobody owns the water", "good"],
+          ["the quick rabbit jumps fences", "good"],
+          ["buy pharmaceuticals now","bad"],
+          ["make quick money at the online casino","bad"],
+          ["the quick brown fox jumps","good"] ,
+          ["next meeting is at night","good"],
+          ["meeting with your superstar","good"] ,
+          ["money like water","bad"]]
+
+    for sentence in corpus:
+        classifier.train(sentence[0], sentence[1])
+
+    showProb("the money jumps")
 
 
 
