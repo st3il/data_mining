@@ -5,7 +5,7 @@ import re
 sw = stopwords.words('english')
 
 def separatewords(text):
-    splitter = re.compile('\\W∗')
+    splitter = re.compile("\\W*")
     return [s.lower() for s in splitter.split(text) if len(s) > 4 and s not in sw]
 
 
@@ -35,24 +35,47 @@ def getarticlewords():
     'http://www.nytimes.com/services/xml/rss/nyt/World.xml',
     'http://www.nytimes.com/services/xml/rss/nyt/Economy.xml'
     ]
-    allword = dict()
+    allwords = dict()
     articlewords = list()
     articletitles = list()
     parseResult = dict()
     for url in feedlist:
         parseResult[url] = feedparser.parse(url)
-
+    i = 0
     for url in parseResult:
         #print parseResult[res]['entries']
         #print "\n"
         #print "title: "+ parseResult[url]['feed']['title']
         #print "description: "+parseResult[url]['feed']['subtitle_detail']['value']
         #print "-------"
-        for feed in parseResult[url]['entries']:
-            #print feed['title']
-            #print stripHTML(feed['summary'])
+
+        #loop through all feeds
+        for (index,feed) in enumerate(parseResult[url]['entries']):
+            #create append dict to articlewords
+            articlewords.append(dict())
+            #append feed title to articletitles
+            articletitles.append(feed['title'])
+            #strip html code
             content = stripHTML(feed['summary'])
-            #words = separatewords(content)
+            #get list of words of feed
+            words = separatewords(content)
+            #loop through words
+            for word in words:
+                #if word is not already in dict add it with value 1
+                if(allwords.has_key(word) == False):
+                    allwords[word] = 1
+                #else increment word appearance
+                else:
+                    allwords[word] += 1
+                #if word is not already in feed in articlewords add it with value 1
+                if(articlewords[i].has_key(word) == False):
+                    articlewords[i][word] = 1
+                #else increment word apearance
+                else:
+                    articlewords[i][word] += 1
+            i += 1
+
+    #print articletitles
 
 
 
