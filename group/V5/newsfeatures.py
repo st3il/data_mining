@@ -76,8 +76,31 @@ def getarticlewords():
                     articlewords[i][word] += 1
             i += 1
 
-    print allwords
+    return [allwords,articlewords,articletitles]
+
+def makematrix(allw,articlew):
+    wordvec = list()
+    wordInArt = list()
+    articleCount = len(articlew)
+    for word in allw:
+        appearanceCounter = 0
+        if(allw[word] > 4):
+            for article in articlew:
+                for articleWord in article:
+                    if(word == articleWord):
+                        appearanceCounter += 1
+            #calculate percentage of appearance
+            percentage = (100.0 / articleCount) * appearanceCounter
+            if(percentage < 60.0):
+                wordvec.append(word)
+
+    for (index1,word) in enumerate(wordvec):
+        for (index2,articleWord) in enumerate(articlew):
+            if(articleWord == word):
+                wordInArt.append(index1).append(index2)
+    print wordInArt
 
 
+articleWords = getarticlewords()
 
-getarticlewords()
+makematrix(articleWords[0],articleWords[1])
