@@ -58,7 +58,8 @@ def getarticlewords():
             #strip html code
             content = stripHTML(feed['summary'])
             #get list of words of feed
-            words = separatewords(content)
+            feedString = feed['title'] + content
+            words = separatewords(feedString)
             #loop through words
             for word in words:
                 #if word is not already in dict add it with value 1
@@ -75,7 +76,7 @@ def getarticlewords():
                     articlewords[i][word] += 1
             i += 1
 
-    #print articletitles
+    print allwords
 
 
 
