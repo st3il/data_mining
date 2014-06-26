@@ -167,7 +167,7 @@ if __name__ == "__main__":
           ["make quick money at the online casino","bad"],
           ["the quick brown fox jumps","good"] ,
           ["next meeting is at night","good"],
-          ["meeting with your superstar","good"] ,
+          ["meeting with your superstar","bad"] ,
           ["money like water","bad"]]
 
     for sentence in corpus:
