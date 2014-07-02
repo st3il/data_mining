@@ -181,7 +181,7 @@ def nnmf(A, m, it):
     _H = np.ones((m, c))
     for i in range(0, m-1):
         for j in range(0, c-1):
-        _H[i,j] = np.random.randint(0, c)
+            _H[i,j] = np.random.randint(0, c)
 
     # initially random values for "W"
     _W = np.ones((r, m))
@@ -261,7 +261,7 @@ def showfeatures(W, H, titles, wordvec):
         # print everything out to the console
         print "Article "+str(i)+": \""+titles[i]+"\""
         for item in relevanceList[0:M]:
-        print str(item[0]) +" "*(20-len(str(item[0]))) + str(item[1])
+            print str(item[0]) +" "*(20-len(str(item[0]))) + str(item[1])
 
     print "-"*150
     print "Printing the most relevant articles for each feature"
