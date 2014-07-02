@@ -7,47 +7,34 @@ reload(sys)
 sys.setdefaultencoding("UTF-8")
 
 
-print "Excercise 2.1.2"
-print "Returntype of feedparser.parse()-Function:"
-print str(type(fp.parse("http://feeds.reuters.com/reuters/topNews"))),"\n"
-
-print "How to print title and description of feeds:"
-print "for feed in parsedFeeds:"
-print "\tfor item in feed.entries:"
-print "\t\tprint item.title"
-print "\t\tprint stripHTML(item.description)\n"
-
-print "Printing titles and their descriptions:"
 nf.parseFeeds()
-nf.getFeedInfo()
 
 print "#"*50,"\n"
 
-print "Ecercise 2.2.1"
-print "Create matrices"
+print "Aufgabe 2.2.1"
+print "Erzeuge Matrix"
 allwords, articlewords, articletitles = getarticlewords()
 
 print "#"*50,"\n"
 
-print "Ecercise 2.2.2"
-print "Creating Word-/Article-Matrix and Wordvector"
+print "Aufgabe 2.2.2"
+print "Erzeuge Word-/Article-Matrix und Wordvector"
 wordvec, wordInArt = makematrix(allwords, articlewords)
 
 print "#"*50,"\n"
 
-print "Ecercise 2.2.3"
-print "clean matrix by deleting articles with no words from wordvec"
+print "Aufgabe 2.2.3"
+print "Matrizen säubern"
 wordInArt, articletitles = cleanMatrix(wordInArt, articletitles)
 
 print "#"*50,"\n"
 
-print "Excercise 2.2.4"
-print "Creating numpy matrix from word/article-matrix"
+print "Aufgabe 2.2.4"
 wordInArtMatrix = np.matrix(wordInArt)
-print "Calling NNMF"
+print "NNMF"
 W, H = nnmf(wordInArtMatrix, 40, 10)
 
 print "#"*50,"\n"
 
-print "Excercise 2.3"
+print "Aufgabe 2.3"
 showfeatures(W, H, articletitles, wordvec)

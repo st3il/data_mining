@@ -15,28 +15,19 @@ feedlist =['http://feeds.reuters.com/reuters/topNews',
     'http://feeds2.feedburner.com/time/business',
     'http://feeds2.feedburner.com/time/politics',
     'http://rss.cnn.com/rss/edition.rss ',
-    'http://rss.cnn.com/rss/edition_world.rss',
-    'http://newsrss.bbc.co.uk/rss/newsonline_world_edition/business/rss.xml',
-    'http://newsrss.bbc.co.uk/rss/newsonline_world_edition/europe/rss.xml',
+    'http://rss.cnn.com/rss/editiontmpWorld.rss',
+    'http://newsrss.bbc.co.uk/rss/newsonlinetmpWorld_edition/business/rss.xml',
+    'http://newsrss.bbc.co.uk/rss/newsonlinetmpWorld_edition/europe/rss.xml',
     'http://www.nytimes.com/services/xml/rss/nyt/World.xml',
     'http://www.nytimes.com/services/xml/rss/nyt/Economy.xml'
     ]
 parsedFeeds = list()
 
-def parseFeeds(showParsing=False):
-    for feed in feedlist:
-        if showParsing == True:
-            print "Parsing feed: ",str(feed)
-        parsedFeeds.append(fp.parse(feed))
+sw = stopwords.words("english")
 
-def getFeedInfo():
-    for feed in parsedFeeds:
-        for item in feed.entries:
-            print "Title:"
-            print item.title
-            print "Description:"
-            print stripHTML(item.description)
-            print "-"*60
+def seperatewords(text):
+    splitter = re.compile("\\W*")
+    return [s.lower() for s in splitter.split(text) if len(s)>4 and s not in sw]
 
 def stripHTML(h):
     p=""
@@ -50,10 +41,20 @@ def stripHTML(h):
             p+=c
     return p
 
-sw = stopwords.words("english")
-def seperatewords(text):
-    splitter = re.compile("\\W*")
-    return [s.lower() for s in splitter.split(text) if len(s)>4 and s not in sw]
+def parseFeeds(showParsing=False):
+    for feed in feedlist:
+        if showParsing == True:
+            print "Parsing feed: ",str(feed)
+        parsedFeeds.append(fp.parse(feed))
+
+def getFeedInfo():
+    for feed in parsedFeeds:
+        for item in feed.entries:
+            print "Titel:"
+            print item.title
+            print "Beschreibung:"
+            print stripHTML(item.description)
+            print "-"*60
 
 def getarticlewords():
     #initialize return datastructures
@@ -61,30 +62,27 @@ def getarticlewords():
     articlewords = list()
     articletitles = list()
 
-    # go through all parsed feeds
+    # gehe durch alle Feed
     for feed in parsedFeeds:
-        # get all articles in the feed
+        # hole alle Artikel eines Feeds
         for item in feed.entries:
-            # add the articles title to the articletitles list
+            # füge alle Titel der articletitles Liste hinzu
             articletitles.append(item.title)
-            # clean out all markup form the articles description and save it in one string with the title
+            # HTML Text säubern
             itemString = item.title +" "+ stripHTML(item.description)
-            # sepereate all words
+            # Worte separieren
             itemWordList = seperatewords(itemString)
-            # generate new dictionary in articlewords list for every article
+            # erzeuge neues Dict für jeden Artikel
             articlewords.append(dict())
-            # iterate through all words in itemWordList
+            # gehe durch alle Wörter
             for word in itemWordList:
-                # initialize value for key 'word' in allwords dict with 0
                 if word not in allwords:
+                    #init "wort" mit 0
                     allwords[word] = 0
-                # initialize value for key 'word' in articlewords list with 0
                 if word not in articlewords[len(articlewords)-1]:
                     articlewords[len(articlewords)-1][word] = 0
-
-                # increment count of appearance for word in articlewords list
+                
                 articlewords[len(articlewords)-1][word] += 1
-                # increment count of appearance for word in allwords dict
                 allwords[word] += 1
 
     return allwords, articlewords, articletitles
@@ -119,10 +117,11 @@ def makematrix(allw, articlew):
     return wordvec, wordInArt
 
 def cleanMatrix(wordInArt, articletitles):
-    for idx, article in enumerate(wordInArt):
+    for i, article in enumerate(wordInArt):
+        #wenn alle Einträge null sind ->(summe=0) dann schmeiße leere zeile aus Array
         if sum(article) == 0:
-            wordInArt.pop(idx)
-            articletitles.pop(idx)
+            wordInArt.pop(i)
+            articletitles.pop(i)
             #print "Cleaned allNulls with Index: " + str(idx)
 
     return wordInArt, articletitles
@@ -130,13 +129,12 @@ def cleanMatrix(wordInArt, articletitles):
 
 parseFeeds()
 
-# create matrices
+# Erzeuge  Matrizen
 allwords, articlewords, articletitles = getarticlewords()
 
-# create Word-/Article-Matrix and Wordvector
+# erzeuge Datenstrukturen
 wordvec, wordInArt = makematrix(allwords, articlewords)
-print wordInArt
-# clean matrix by deleting articles with no words from wordvec
+# Säubere Leere Zeilen
 wordInArt, articletitles = cleanMatrix(wordInArt, articletitles)
 
 # write into data-file
@@ -159,12 +157,12 @@ wordInArt, articletitles = cleanMatrix(wordInArt, articletitles)
 # fout.close()
 
 
-# calculates the cost/distance between to matrices
+# Kosten zwischen Matrixen
 def cost(A, B):
     return np.linalg.norm(A-B)
 
-# 2.2.4: Implementation of NNMF
-# Matrix: A, Number of Features: m, Number of Iterations: it
+# 2.2.4:
+# Matrix: A, Features: m, Iterations: it
 def nnmf(A, m, it):
     _costThreshold = 5
     r = A.shape[0]
@@ -173,7 +171,6 @@ def nnmf(A, m, it):
     # create array from A to have easier (element by element) matrix calculations
     _A = np.array(A)
 
-    # check for incorrect values
     if c < m:
         return None, None
 
@@ -217,7 +214,7 @@ def showfeatures(W, H, titles, wordvec):
 
     # Aufgabe 2.3.1
     print "-"*150
-    print "Printing the most relevant words for each feature"
+    print "Ausgabe der wichtigsten Worte eines Merkmals"
     print "-"*150
     for i in range(H.shape[0]):
         # create a list for every feature H
@@ -258,10 +255,14 @@ def showfeatures(W, H, titles, wordvec):
         relevanceList.sort()
         relevanceList.reverse()
 
+
         # print everything out to the console
         print "Article "+str(i)+": \""+titles[i]+"\""
-        for item in relevanceList[0:M]:
+        for x, item in enumerate(relevanceList[0:M]):
             print str(item[0]) +" "*(20-len(str(item[0]))) + str(item[1])
+            x+=1
+            if(x == 3):
+                break
 
     print "-"*150
     print "Printing the most relevant articles for each feature"
@@ -279,9 +280,11 @@ def showfeatures(W, H, titles, wordvec):
 
         # print the subject and the M=3 articles with their corresponding weight to the console
         print "Feature "+str(i)+": \"" + subject[i] +"\""
-        for features in bestArticleForFeature[0:M]:
+        for k, features in enumerate(bestArticleForFeature[0:M]):
             print str(features[0]) + " "*(20-len(str(features[0]))) + str(features[1])
-
+            k+=1
+            if(k == 8):
+                break
 
 
 # create numpy matrix from word/article-matrix
