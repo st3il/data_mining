@@ -21,7 +21,7 @@ feedlist =['http://feeds.reuters.com/reuters/topNews',
     'http://www.nytimes.com/services/xml/rss/nyt/World.xml',
     'http://www.nytimes.com/services/xml/rss/nyt/Economy.xml'
     ]
-parsedFeeds = list()
+feedResults = list()
 
 sw = stopwords.words("english")
 
@@ -41,14 +41,12 @@ def stripHTML(h):
             p+=c
     return p
 
-def parseFeeds(showParsing=False):
+def parseFeeds():
     for feed in feedlist:
-        if showParsing == True:
-            print "Parsing feed: ",str(feed)
-        parsedFeeds.append(fp.parse(feed))
+        feedResults.append(fp.parse(feed))
 
 def getFeedInfo():
-    for feed in parsedFeeds:
+    for feed in feedResults:
         for item in feed.entries:
             print "Titel:"
             print item.title
@@ -57,13 +55,13 @@ def getFeedInfo():
             print "-"*60
 
 def getarticlewords():
-    #initialize return datastructures
+    #initialize the returning lists
     allwords = dict()
     articlewords = list()
     articletitles = list()
 
     # gehe durch alle Feed
-    for feed in parsedFeeds:
+    for feed in feedResults:
         # hole alle Artikel eines Feeds
         for item in feed.entries:
             # füge alle Titel der articletitles Liste hinzu
@@ -77,13 +75,14 @@ def getarticlewords():
             # gehe durch alle Wörter
             for word in itemWordList:
                 if word not in allwords:
-                    #init "wort" mit 0
-                    allwords[word] = 0
+                    #init "wort" mit 1
+                    allwords[word] = 1
+                else:
+                    allwords[word] += 1
                 if word not in articlewords[len(articlewords)-1]:
-                    articlewords[len(articlewords)-1][word] = 0
-                
-                articlewords[len(articlewords)-1][word] += 1
-                allwords[word] += 1
+                    articlewords[len(articlewords)-1][word] = 1
+                else:
+                    articlewords[len(articlewords)-1][word] += 1
 
     return allwords, articlewords, articletitles
 
@@ -99,9 +98,6 @@ def makematrix(allw, articlew):
             if word not in article:
                 continue
             articleCount += 1
-
-        #print word +";" +str(articleCount)+";"+str(len(articlew))
-        #print str(articleCount/len(articlew))
         if articleCount/len(articlew) < 0.6:
             wordvec.append(word)
 
@@ -116,16 +112,34 @@ def makematrix(allw, articlew):
                 articleList.append(0)
     return wordvec, wordInArt
 
-def cleanMatrix(wordInArt, articletitles):
+def removeZerosFromMatrix(wordInArt, articletitles):
     for i, article in enumerate(wordInArt):
         #wenn alle Einträge null sind ->(summe=0) dann schmeiße leere zeile aus Array
         if sum(article) == 0:
             wordInArt.pop(i)
             articletitles.pop(i)
-            #print "Cleaned allNulls with Index: " + str(idx)
 
     return wordInArt, articletitles
 
+def writeIntoFile(wordvec,wordInArt):
+    #write into data-file
+    fout = open("data/myfile.txt", "w")
+    for idx, word in enumerate(wordvec):
+        if idx < (len(wordvec)-1):
+            fout.write(word+", ")
+        else:
+            fout.write(word+"\n")
+
+    for idx1, article in enumerate(wordInArt):
+        for idx2, word in enumerate(article):
+            if idx2 < (len(article)-1):
+                fout.write(str(word)+", ")
+            else:
+                fout.write(str(word))
+        if idx1 < (len(wordInArt)-1):
+            fout.write("\n")
+
+    fout.close()
 
 parseFeeds()
 
@@ -135,27 +149,7 @@ allwords, articlewords, articletitles = getarticlewords()
 # erzeuge Datenstrukturen
 wordvec, wordInArt = makematrix(allwords, articlewords)
 # Säubere Leere Zeilen
-wordInArt, articletitles = cleanMatrix(wordInArt, articletitles)
-
-# write into data-file
-# fout = open("../results/wv_awm.dat", "w")
-# for idx, word in enumerate(wordvec):
-# 	if idx < (len(wordvec)-1):
-# 		fout.write(word+", ")
-# 	else:
-# 		fout.write(word+"\n")
-#
-# for idx1, article in enumerate(wordInArt):
-# 	for idx2, word in enumerate(article):
-# 		if idx2 < (len(article)-1):
-# 			fout.write(str(word)+", ")
-# 		else:
-# 			fout.write(str(word))
-# 	if idx1 < (len(wordInArt)-1):
-# 		fout.write("\n")
-#
-# fout.close()
-
+wordInArt, articletitles = removeZerosFromMatrix(wordInArt, articletitles)
 
 # Kosten zwischen Matrixen
 def cost(A, B):
@@ -164,44 +158,43 @@ def cost(A, B):
 # 2.2.4:
 # Matrix: A, Features: m, Iterations: it
 def nnmf(A, m, it):
-    _costThreshold = 5
     r = A.shape[0]
     c = A.shape[1]
 
-    # create array from A to have easier (element by element) matrix calculations
+    # erstelle ein Array aus Matrix A
     _A = np.array(A)
 
     if c < m:
         return None, None
 
-    # initially random values for "H"
+    # "H" mit random Werten initialisieren
     _H = np.ones((m, c))
     for i in range(0, m-1):
         for j in range(0, c-1):
             _H[i,j] = np.random.randint(0, c)
 
-    # initially random values for "W"
+    # "W" mit random Werten initialisieren
     _W = np.ones((r, m))
     for i in range(0, r):
         for j in range(0, m):
             _W[i,j] = np.random.randint(0, r)
 
     for i in range(0, it):
-        _Wt = _W.transpose()
-        _Ht = _H.transpose()
+        _Wtrans = _W.transpose()
+        _Htrans = _H.transpose()
 
-        # New calculation of H
-        _H = _H * ( np.dot(_Wt, _A) / np.dot(np.dot(_Wt,_W),_H) )
-        # New calculation of W
-        _W = _W * ( np.dot(_A, _Ht) / np.dot(np.dot(_W, _H),_Ht) )
+        # berechne H neu
+        _H = _H * (np.dot(_Wtrans, _A) / np.dot(np.dot(_Wtrans, _W), _H))
+        # berechne W neu
+        _W = _W * (np.dot(_A, _Htrans) / np.dot(np.dot(_W, _H), _Htrans))
 
-        # Calculate Cost
+        # Kosten berechnen
         _B = _W.dot(_H)
         _cost = cost(_A,_B)
-        print "Cost:", _cost
+        print "Kosten:", _cost
 
-        # if cost below threshold, return factors _W and _H
-        if _cost < _costThreshold:
+        # wenn Kosten kleiner 5 gebe _W und _H zurück
+        if _cost < 5:
             break
 
     return np.matrix(_W), np.matrix(_H)
@@ -213,72 +206,71 @@ def showfeatures(W, H, titles, wordvec):
     subject = list()
 
     # Aufgabe 2.3.1
-    print "-"*150
+    print "*"*150
     print "Ausgabe der wichtigsten Worte eines Merkmals"
-    print "-"*150
+    print "*"*150
     for i in range(H.shape[0]):
-        # create a list for every feature H
+        # erzeuge eine Liste für jedes Feature in H
         featureList = list()
         for j in range(H.shape[1]):
-            # append weight of element H[i,j] and j-th word of the wordvec to the list
+            # füge das Gewicht von H[i,j] und j-th zu wordvec
             featureList.append([H[i,j], wordvec[j]])
-        # reverse sort the featureList, to get the most relevant words on top
+        # drehe Reihenfolge um die meist relevanten Wörter als erstes zu bekommen
         featureList.sort()
         featureList.reverse()
 
-        # print the N=6 most relevant words for a feature to the console
+        # gebe die 6 meist relevanten Wörter für Feature i aus
         featuresWords = ""
-        print "The "+str(N)+" most relevant words for feature "+str(i)+ ":"
-        # go through featureList
-        for k in featureList[0:N]:
-            # create string of all feature words that belong together
-            featuresWords = featuresWords + " " + str(k[1])
-            # print the single words and their weight property
-            print str(k[0])+" "*(20-len(str(k[0])))+str(k[1])
+        print "Die "+str(N)+" meist relevanten Wörter für "+str(i)+ ":"
+        # gehe durch featureList
+        for feature in featureList[0:N]:
+            # füge wörter zu einem String zusammen
+            featuresWords = featuresWords + " " + str(feature[1])
+            # gebe das Wort und die Gewichtung aus
+            print str(feature[0])+" "*(20-len(str(feature[0])))+str(feature[1])
 
-        # create a list of all words that describe a feature
         subject.append(featuresWords)
 
 
-    print "-"*150
-    print "Printing the most relevant features for each article"
-    print "-"*150
+    print "*"*150
+    print "Gebe die meist relevanten Features für jeden Artikel aus"
+    print "*"*150
     # Aufgabe 2.3.2
-    # print the M=3 most relevant features for an article to the console
+    # gebe die 3 meist relevanten Features aus
     for i in range(W.shape[0]):
-        # create a list for every article in W
+        # erzeugen eine Liste mit jeden Artikel aus W
         relevanceList = list()
         for j in range(W.shape[1]):
-            # append weight of feature at W[i,j] and its subject to the list
+            # füge das Gewicht des Features zu W[i,j] hinzu
             relevanceList.append([W[i,j],subject[j]])
-        # reverse sort the relevanceList, to get the most relevant subjects on top
+        # drehe Reihenfolge um die meist relevanten als erstes zu bekommen
         relevanceList.sort()
         relevanceList.reverse()
 
 
-        # print everything out to the console
-        print "Article "+str(i)+": \""+titles[i]+"\""
+        # Ausgabe
+        print "Atikel "+str(i)+": \""+titles[i]+"\""
         for x, item in enumerate(relevanceList[0:M]):
             print str(item[0]) +" "*(20-len(str(item[0]))) + str(item[1])
             x+=1
             if(x == 3):
                 break
 
-    print "-"*150
-    print "Printing the most relevant articles for each feature"
-    print "-"*150
-    # print the M=3 most relevant articles for a feature to the console
+    print "*"*150
+    print "Gebe die meist relevanten Artikel für jedes Feature aus"
+    print "*"*150
+    # gebe die 3 meist relevanten Artikel für jedes Feature aus
     for i in range(W.shape[1]):
-        # create a list for every posible feature of an article
+        # erstelle eine liste mit allen Features eines Artikels
         bestArticleForFeature = list()
         for j in range(W.shape[0]):
-            # append the weight of W[j,i] and the articles title to the list
+            # füge das Gewicht zu W[j,i] hinzu
             bestArticleForFeature.append([W[j, i], titles[j]])
-        # reverse sort the bestArticleForFeature-list, to get the most relevant articles on top
+         # drehe Reihenfolge um die meist relevanten als erstes zu bekommen
         bestArticleForFeature.sort()
         bestArticleForFeature.reverse()
 
-        # print the subject and the M=3 articles with their corresponding weight to the console
+        # Ergebnis ausgeben
         print "Feature "+str(i)+": \"" + subject[i] +"\""
         for k, features in enumerate(bestArticleForFeature[0:M]):
             print str(features[0]) + " "*(20-len(str(features[0]))) + str(features[1])
@@ -287,17 +279,17 @@ def showfeatures(W, H, titles, wordvec):
                 break
 
 
-# create numpy matrix from word/article-matrix
+# erstelle numpy matrix von word/article-matrix
 #wordInArtMatrix = np.matrix(wordInArt)
 
-#print "-"*150
-#print "Calculating NNMF"
-#print "-"*150
+#print "*"*150
+#print "Berechne NNMF"
+#print "*"*150
 #W, H = nnmf(wordInArtMatrix, 40, 10)
 
-#print "-"*150
-#print "Calculating ShowFeatures"
-#print "-"*150
+#print "*"*150
+#print "Berechne ShowFeatures"
+#print "*"*150
 #showfeatures(W, H, articletitles, wordvec)
 
 
