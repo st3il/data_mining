@@ -1,7 +1,7 @@
 from os.path import isdir,join,normpath
 from os import listdir
 
-import Image
+import image
 
 from numpy import asfarray,dot,argmin,zeros
 from numpy import average,sort,trace
@@ -30,6 +30,16 @@ def parseDirectory(directoryName,extension):
 #
 #
 #
+def generateListOfImgs(listOfTrainFiles):
+    # Liste mit Bilder
+    listOfImage = []
+
+    for file in listOfTrainFiles:
+        #listOfImage.append(image.open(file))
+
+    return list
+
+
 
 
 ####################################################################################
