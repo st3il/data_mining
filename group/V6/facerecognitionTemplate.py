@@ -1,7 +1,11 @@
 from os.path import isdir,join,normpath
 from os import listdir
 
-import Image
+#Tobi und Chen brauchen das:
+#import Image
+#Sascha braucht das:
+from PIL import Image
+
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
@@ -9,8 +13,6 @@ from numpy import asfarray,dot,argmin,zeros
 from numpy import average,sort,trace, argsort
 from numpy.linalg import svd,eigh
 from numpy import concatenate, reshape
-from math import sqrt
-
 import tkFileDialog
 
 def parseDirectory(directoryName,extension):
@@ -43,7 +45,15 @@ def generateListOfImgs(listOfTrainFiles):
 
     return listOfImage
 
-def convertImgListToNumpyData(imgList, single = False):
+def createImgAsNumpyData(img):
+    list = list()
+    list.append(img)
+
+    numpyList = convertImageListToNumpyData(list)
+    return numpyList[0]
+
+
+def convertImageListToNumpyData(imgList):
     # konvertiere Bilder in ein numpy array 0
     # erzeuge die Matrix : Pixelanzahl(33000) x Bildanzahhl
     # bestimme hochsten Wert fur Normierung
@@ -51,11 +61,10 @@ def convertImgListToNumpyData(imgList, single = False):
 
     #numpaArray = np.array(imgList[x] for x in imgList)
     imgArrays = list()
+    for img in imgList:
+        npArray = asfarray(img)
 
-    if(single):
-        npArray = asfarray(imgList)
-
-        npArray = npArray.reshape(1, imgList.size[0]*imgList.size[1])
+        npArray = npArray.reshape(1, img.size[0]*img.size[1])
 
         # normierung:
         maxV = npArray.max()
@@ -63,18 +72,6 @@ def convertImgListToNumpyData(imgList, single = False):
         npArray = npArray/maxV
 
         imgArrays.append(npArray)
-    else:
-        for img in imgList:
-            npArray = asfarray(img)
-
-            npArray = npArray.reshape(1, img.size[0]*img.size[1])
-
-            # normierung:
-            maxV = npArray.max()
-
-            npArray = npArray/maxV
-
-            imgArrays.append(npArray)
 
     return concatenate(imgArrays, axis=0)
 
@@ -88,9 +85,6 @@ def removeAverageOfImage(normedArray, averageArray):
 
 
 def calculateEigenfaces(adjfaces, width, height):
-    K = 6
-
-
     #CV
     CV = dot(adjfaces , adjfaces.transpose())
 
@@ -101,13 +95,12 @@ def calculateEigenfaces(adjfaces, width, height):
     sortI = argsort(eigenValues)[::-1]
     eigenValues = eigenValues[sortI]
     eigenVectors = eigenVectors[sortI]
-    t = adjfaces.transpose()
 
     # calculate Eigenfaces from Eigenvectors
-    Eigenfaces = dot(adjfaces.transpose(), eigenVectors).transpose()
+    eigenfaces = dot(adjfaces.transpose(), eigenVectors).transpose()
 
     # restrict to K faces
-    return Eigenfaces[:K]
+    return eigenfaces[:6]
 
 def calcEigenfaceCoord(NormedArrayOfFaces, Usub):
 
@@ -183,7 +176,7 @@ for image in images:
 
 
 # konvertiere Bilder in Zahlen
-floatFaces = convertImgListToNumpyData(images)
+floatFaces = convertImageListToNumpyData(images)
 
 # das Durchschnittsbild in Zahlen
 averageFace = np.average(floatFaces, axis=0)
@@ -212,7 +205,7 @@ Usub = calculateEigenfaces(NormedArrayOfFaces, width,height)
 testBild = Image.open(testImageDirAndFilename)
 testBild = testBild.convert('L')
 
-testBildNumpy = convertImgListToNumpyData(testBild, single = True)
+testBildNumpy = createImgAsNumpyData(testBild)
 
 NormedTestBild = removeAverageOfImage(np.array(testBildNumpy), averageFace)
 
@@ -222,9 +215,9 @@ TestfaceCoordinates = calcEigenfaceCoordforTestImage(NormedTestBild, Usub)
 
 NearestImageIndex, dist = getNearestImage(TestfaceCoordinates, EigenfaceCoordinates)
 
-### Show all Eigenfaces as Images
+### zeige alle Eigenfaces
 resultFig = plt.figure()
-resultFig.suptitle("Euclidean Distance %.3f" % (dist))
+resultFig.suptitle("Euclid Distanz %.3f" % (dist))
 
 ax = resultFig.add_subplot(1,2,1)
 ax.yaxis.set_visible(False)
