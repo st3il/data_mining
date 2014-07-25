@@ -40,16 +40,19 @@ def generateListOfImgs(listOfTrainFiles):
 
     #speichter Images
     for file in listOfTrainFiles:
+        #oeffne Datei
         image = Image.open(file)
+        # erzeuge graues bild
+        image = image.convert('L')
         listOfImage.append(image)
 
     return listOfImage
 
 def createImgAsNumpyData(img):
-    list = list()
-    list.append(img)
+    imglist = list()
+    imglist.append(img)
 
-    numpyList = convertImageListToNumpyData(list)
+    numpyList = convertImageListToNumpyData(imglist)
     return numpyList[0]
 
 
@@ -86,7 +89,7 @@ def removeAverageOfImage(normedArray, averageArray):
 
 def calculateEigenfaces(adjfaces, width, height):
     #CV
-    CV = dot(adjfaces , adjfaces.transpose())
+    CV = dot(adjfaces, adjfaces.transpose())
 
     #Eigenwerte:
     eigenValues, eigenVectors = eigh(CV)
@@ -131,16 +134,16 @@ def calcEigenfaceCoordforTestImage(NormedTestBild, Usub):
 def euclideanDist(A, B):
     return np.linalg.norm(A-B)
 
-def getNearestImage(TestfaceCoordinates, EigenfaceCoordinates):
+def getNearestImage(TestfaceCoords, EigenfaceCoords):
     dist = sys.float_info.max
-    nearestImageIdx = 0
-    for idx, faceCoordinates in enumerate(EigenfaceCoordinates):
-        newDist = euclideanDist(TestfaceCoordinates, faceCoordinates)
+    closestImaId = 0
+    for id, faceCoords in enumerate(EigenfaceCoords):
+        newDist = euclideanDist(TestfaceCoords, faceCoords)
         if dist > newDist:
-            nearestImageIdx = idx
+            closestImaId = id
             dist = newDist
 
-    return nearestImageIdx, dist
+    return closestImaId, dist
 
 ####################################################################################
 #Start of main programm
@@ -163,15 +166,15 @@ images = generateListOfImgs(imageFiles)
 
 #print("Kontrolliere B und H")
 
-width = 0
-height = 0
+width = 167
+height = 250
 
-for image in images:
-    #print('Breite %d' %image.size[0])
-    width = image.size[0]
-    #print('Hoehe %d' %image.size[1])
-    height = image.size[1]
-    #break
+# for image in images:
+#     #print('Breite %d' %image.size[0])
+#     width = image.size[0]
+#     #print('Hoehe %d' %image.size[1])
+#     height = image.size[1]
+#     #break
 
 
 
